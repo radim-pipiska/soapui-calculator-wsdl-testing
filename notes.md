@@ -11,7 +11,7 @@ Stav: **rozpracováno**. Body označené `[OVĚŘIT]` zatím nemám potvrzené.
 - Operace: Add, Subtract, Multiply, Divide
 - Namespace služby (`targetNamespace`): `http://tempuri.org/`
 - Namespace SOAP 1.1 obálky: `http://schemas.xmlsoap.org/soap/envelope/`
-- SOAPAction pro Add: `[OVĚŘIT]` (čekám `http://tempuri.org/Add`, ověřit ve WSDL v `binding` -> `operation`; WSDL má bindingy pro SOAP 1.1 i 1.2)
+- SOAPAction pro Add: `http://tempuri.org/Add`, ověřono ve WSDL v `binding` -> `operation`; WSDL má bindingy pro SOAP 1.1 i 1.2)
 
 ## 2. Add (7 + 5)
 
@@ -54,7 +54,7 @@ Pozorování (bez hodnocení, specifikaci chování pro dělení nulou nemám):
 | C | Deklarace `ns1` změněna na `http://tempura.org/` | 12 | FAILED (element v tom namespace není) |
 | D | V **requestu** `xmlns:tem` změněno na `http://tempura.org/` | **0** bez chyby | XPath Match FAILED (čekáno 12 nebo 99, přišlo 0) |
 | E | Očekávaná hodnota 13 místo 12 | 12 | FAILED |
-| F | Očekávaná hodnota `12` plus nový řádek | 12 | FAILED `[OVĚŘIT screenshotem]` |
+| F | Očekávaná hodnota `12` plus nový řádek | 12 | FAILED |
 
 Závěry:
 
