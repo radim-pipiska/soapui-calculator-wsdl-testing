@@ -14,7 +14,7 @@ Služba: `http://www.dneonline.com/calculator.asmx?WSDL` (nejsem její autor ani
 
 ## Obsah
 
-- `soapui/` export projektu ze SoapUI (XML) `[DOPLNIT RUČNĚ: přesný název souboru]`
+- `soapui/` export projektu ze SoapUI (XML) `Calculator-soapui-project.xml`
 - `notes.md` pozorování, experimenty a závěry
 - `screenshots/` důkazy k experimentům
 
@@ -30,4 +30,11 @@ Rozpracováno. Otevřené body jsou na konci `notes.md`.
 
 ## Licence
 
-`[DOPLNIT RUČNĚ]`
+`## Licence
+
+Tento projekt je open-source a je licencován pod **MIT licencí**. 
+
+Copyright (c) 2026 Radimp
+
+Povoluje se bezplatné používání, kopírování, modifikace a distribuce tohoto testovacího projektu pro jakékoli účely, bez jakýchkoli omezení. Projekt je poskytován "jak stojí a leží", bez jakékoli záruky.
+`
