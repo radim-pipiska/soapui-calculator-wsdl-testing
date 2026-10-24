@@ -54,7 +54,7 @@ Pozorování (bez hodnocení, specifikaci chování pro dělení nulou nemám):
 | C | Deklarace `ns1` změněna na `http://tempura.org/` | 12 | FAILED (element v tom namespace není) |
 | D | V **requestu** `xmlns:tem` změněno na `http://tempura.org/` | **0** bez chyby | XPath Match FAILED (čekáno 12 nebo 99, přišlo 0) |
 | E | Očekávaná hodnota 13 místo 12 | 12 | FAILED |
-| F | Očekávaná hodnota `12` plus nový řádek | 12 | FAILED ![](screenshots/sabotaz_novy_radek.png) |
+| F | Očekávaná hodnota `12` plus nový řádek | 12 | ![FAILED](screenshots/sabotaz_novy_radek.png) |
 
 Závěry:
 
