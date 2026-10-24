@@ -30,11 +30,11 @@ Rozpracováno. Otevřené body jsou na konci `notes.md`.
 
 ## Licence
 
-`## Licence
+## Licence
 
 Tento projekt je open-source a je licencován pod **MIT licencí**. 
 
 Copyright (c) 2026 Radimp
 
 Povoluje se bezplatné používání, kopírování, modifikace a distribuce tohoto testovacího projektu pro jakékoli účely, bez jakýchkoli omezení. Projekt je poskytován "jak stojí a leží", bez jakékoli záruky.
-`
+
