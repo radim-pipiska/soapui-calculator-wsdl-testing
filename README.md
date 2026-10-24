@@ -30,8 +30,6 @@ Rozpracováno. Otevřené body jsou na konci `notes.md`.
 
 ## Licence
 
-## Licence
-
 Tento projekt je open-source a je licencován pod **MIT licencí**. 
 
 Copyright (c) 2026 Radimp
