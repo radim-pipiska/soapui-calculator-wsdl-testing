@@ -13,7 +13,7 @@ Stav: **rozpracováno**. Body označené `[OVĚŘIT]` zatím nemám potvrzené.
 - Namespace SOAP 1.1 obálky: `http://schemas.xmlsoap.org/soap/envelope/`
 - SOAPAction pro Add: `http://tempuri.org/Add` (přečteno z WSDL)
 - Bindingy: dva, SOAP 1.1 a SOAP 1.2 `[DOPLNIT: názvy bindingů z WSDL]`
-- SOAP 1.2 přenáší action jako parametr `action` v hlavičce Content-Type, ne jako samostatnou hlavičku SOAPAction `[OVĚŘIT v requestu ve SoapUI]`
+- SOAP 1.2 přenáší action jako parametr `action` v hlavičce Content-Type, ne jako samostatnou hlavičku SOAPAction
 - Vstupy `intA`, `intB`: `s:int` (xsd:int, 32bitové celé číslo se znaménkem, rozsah -2 147 483 648 až 2 147 483 647), `minOccurs="1"`, `maxOccurs="1"`, tedy povinné prvky
 
 ## 2. Add (7 + 5)
@@ -69,7 +69,7 @@ Aserce (dva samostatné requesty, oba ve výchozím stavu zelené):
 
 | Request | Vstup | Aserce |
 |---|---|---|
-| `Add - max valid` | 2147483646 + 1 | Valid HTTP Status Codes `[DOPLNIT hodnotu]`, Not SOAP Fault, XPath Match na `AddResult` = `2147483647` |
+| `Add - max valid` | 2147483646 + 1 | Valid HTTP Status Codes (200), Not SOAP Fault, XPath Match na `AddResult` = `2147483647` |
 | `Add - overflow` | 2147483647 + 1 | Valid HTTP Status Codes (500), SOAP Fault, XPath Match na `faultcode` = `soap:Server` |
 
 Pozorování (specifikaci chování pro přetečení nemám, nehodnotím jako vadu):
