@@ -1,0 +1,25 @@
+Jsi seniorní QA automatizér se specializací na SoapUI.
+Testuji SOAP službu na adrese: http://www.dneonline.com/calculator.asmx
+
+Vytvoř mi sadu asercí pro negativní testovací scénář „Dělení nulou“ (operace Divide). 
+
+Níže ti poskytuji SKUTEČNOU, neupravenou odpověď (HTTP 500), kterou vrátil server a byla zkopírována z karty RAW v SoapUI. Ber na vědomí, že toto XML představuje pouze aktuální pozorované chování systému, nikoliv oficiální byznysovou specifikaci chybových stavů. Pokud budeš při návrhu asercí cokoliv odhadovat nebo domýšlet, jasně to v textu uveď!
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <soap:Body>
+      <soap:Fault>
+         <faultcode>soap:Server</faultcode>
+         <faultstring>System.Web.Services.Protocols.SoapException: Server was unable to process request. ---> System.OverflowException: Arithmetic operation resulted in an overflow.
+   at Calculator.Divide(Int32 intA, Int32 intB) in G:\PleskVhosts\dneonline.com\httpdocs\Calculator.asmx:line 19
+   --- End of inner exception stack trace ---</faultstring>
+         <detail/>
+      </soap:Fault>
+   </soap:Body>
+</soap:Envelope>
+
+Na základě těchto reálných dat vygeneruj:
+1. Přesnou deklaraci namespace a XPath Match pro <faultcode> (očekáváno 'soap:Server'). Jmenný prostor musí striktně odpovídat schématu http://schemas.xmlsoap.org/soap/envelope/.
+
+2. Přesný XPath Match pro <faultstring>. Zaměř se pouze na stabilní textovou část zprávy (např. 'Server was unable to process request' a 'System.OverflowException'). Pro vytvoření aserce použij wildcards (*). Ignoruj a záměrně neověřuj vnitřní implementační detaily serveru, jako jsou absolutní cesty k souborům na disku G:\ nebo konkrétní čísla řádků v kódu, protože ty se mohou s novým releasem změnit a znevalidnit test.
+
+3. U každé aserce napiš podrobný návod pro „Test the Tester“ (jak nasimulovat selhání aserce úmyslným zanesením chyby do Expected Result nebo odesláním validního požadavku 2/2), abychom měli jistotu, že aserce nejsou falešně pozitivní.

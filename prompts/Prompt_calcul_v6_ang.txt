@@ -1,0 +1,23 @@
+You are a senior QA automation engineer specializing in SoapUI.
+I am testing a SOAP service at: http://www.dneonline.com/calculator.asmx
+Create a set of assertions for the negative test scenario "Division by Zero" (Divide operation).
+Below is the ACTUAL, unmodified response (HTTP 500) returned by the server, copied from the RAW tab in SoapUI. Note that this XML represents only the currently observed behavior of the system, not an official business specification of error states. If you estimate or assume anything while designing the assertions, clearly state it in the text!
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <soap:Body>
+      <soap:Fault>
+         <faultcode>soap:Server</faultcode>
+         <faultstring>System.Web.Services.Protocols.SoapException: Server was unable to process request. ---> System.OverflowException: Arithmetic operation resulted in an overflow.
+   at Calculator.Divide(Int32 intA, Int32 intB) in G:\PleskVhosts\dneonline.com\httpdocs\Calculator.asmx:line 19
+   --- End of inner exception stack trace ---</faultstring>
+         <detail/>
+      </soap:Fault>
+   </soap:Body>
+</soap:Envelope>
+
+Based on this real data, generate:
+1. The exact namespace declaration and XPath Match for <faultcode> (expected 'soap:Server'). The namespace must strictly match the schema xmlsoap.org.
+
+2. The exact XPath Match for <faultstring>. Focus only on the stable text part of the message ('Server was unable to process request' and 'System.OverflowException'). Use wildcards (*) to create the assertion. Place the asterisks exclusively in the Expected Result field and enable the Allow Wildcards option; wildcards do not belong in the XPath Expression field. Ignore and intentionally do not verify the internal server implementation details, such as absolute file paths on the G:\ drive or specific code line numbers, as these may change with a new release. The wildcard must correctly handle the newlines before the stack trace, so design the Expected Result value in the format: *System.OverflowException: Arithmetic operation resulted in an overflow* (or with an asterisk at the end) so that the assertion does not fail on line breaks.
+
+3. For each assertion, write a detailed guide for "Test the Tester" (how to simulate an assertion failure by intentionally introducing an error into the Expected Result or sending a valid 2/2 request) to ensure the assertions are not false positives.
