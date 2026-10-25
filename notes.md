@@ -12,7 +12,7 @@ Stav: **rozpracováno**. Body označené `[OVĚŘIT]` zatím nemám potvrzené.
 - Namespace služby (`targetNamespace`): `http://tempuri.org/`
 - Namespace SOAP 1.1 obálky: `http://schemas.xmlsoap.org/soap/envelope/`
 - SOAPAction pro Add: `http://tempuri.org/Add` (přečteno z WSDL)
-- Bindingy: dva, SOAP 1.1 a SOAP 1.2 `[DOPLNIT: názvy bindingů z WSDL]`
+- Bindingy: dva, SOAP 1.1 a SOAP 1.2 `CalculatorSoap a CalculatorSoap12`
 - SOAP 1.2 přenáší action jako parametr `action` v hlavičce Content-Type, ne jako samostatnou hlavičku SOAPAction
 - Vstupy `intA`, `intB`: `s:int` (xsd:int, 32bitové celé číslo se znaménkem, rozsah -2 147 483 648 až 2 147 483 647), `minOccurs="1"`, `maxOccurs="1"`, tedy povinné prvky
 
