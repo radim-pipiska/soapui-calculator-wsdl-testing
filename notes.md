@@ -153,17 +153,17 @@ Závěry:
 - [x] SOAPAction pro Add ověřit ve WSDL
 - [x] Zjistit, zda Schema Compliance a SOAP Response projdou na Faultu (projdou)
 - [x] Aserce Valid HTTP Status Codes, SOAP Fault a XPath na `faultcode` na Divide
-- [ ] Vrátit aserce na Divide do výchozího zeleného stavu a znovu exportovat projekt
-- [ ] Doplnit názvy bindingů z WSDL
+- [x] Vrátit aserce na Divide do výchozího zeleného stavu a znovu exportovat projekt
+- [x] Doplnit názvy bindingů z WSDL
 - [x] Hranice typu `int` (viz XSD) na Add: 2147483647 + 1
 - [x] Klon `Add - overflow`: aserce Valid HTTP Status Codes (500), SOAP Fault a XPath na `faultcode`
 - [x] Samostatný request `Add - max valid` (2147483646 + 1) se zelenou asercí na `2147483647`
 - [x] HTTP status u 2147483646 + 1 (200)
 - [x] Sabotáž XPath Match na `faultcode` u `Add - overflow` (doslovná hláška)
-- [ ] Chain: sabotáž zdrojové cesty (neexistující element) s tipem předem a doslovnou hláškou
-- [ ] Chain: důkaz, že se hodnota opravdu přenáší (změnit krok 1, výsledek spočítat předem)
+- [x] Chain: sabotáž zdrojové cesty (neexistující element) s tipem předem a doslovnou hláškou
+- [x] Chain: důkaz, že se hodnota opravdu přenáší (změnit krok 1, výsledek spočítat předem)
 - [ ] Chain: aserce na krok 1
 - [ ] Chain: doplnit celou hlášku Saxon z kroku Property Transfer
 - [ ] Zkontrolovat výstup AI (`soapui-divide-by-zero-assertions.md`) proti skutečnému SoapUI
 - [ ] Doplnit hodnotu Valid HTTP Status Codes u `Add - max valid`
-- [ ] Doplnit screenshoty do `screenshots/`
+- [x] Doplnit screenshoty do `screenshots/`
