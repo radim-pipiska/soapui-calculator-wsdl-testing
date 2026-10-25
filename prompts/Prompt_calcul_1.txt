@@ -1,0 +1,22 @@
+Jsi seniorní QA automatizér se specializací na SoapUI.
+Testuji SOAP službu na adrese: http://www.dneonline.com/calculator.asmx
+
+Vytvoř mi sadu asercí pro negativní testovací scénář „Dělení nulou“ (operace Divide). 
+
+Při zadání (2 / 0) mi server vrátil tuto REÁLNOU XML odpověď (HTTP 500):
+
+<soap:Envelope xmlns:soap="http://xmlsoap.org" xmlns:xsi="http://w3.org" xmlns:xsd="http://w3.org">
+   <soap:Body>
+      <soap:Fault>
+         <faultcode>soap:Server</faultcode>
+         <faultstring>System.Web.Services.Protocols.SoapException: Server was unable to process request. ---> System.OverflowException: Arithmetic operation resulted in an overflow.
+   at Calculator.Divide(Int32 intA, Int32 intB) in d:\...\Calculator.asmx.cs:line 28</faultstring>
+         <detail />
+      </soap:Fault>
+   </soap:Body>
+</soap:Envelope>
+
+Na základě tohoto reálného XML vygeneruj:
+1. Přesnou deklaraci namespace a XPath Match pro <faultcode> (očekáváno 'soap:Server').
+2. Přesný XPath Match pro <faultstring>, který bude pomocí wildcards (*) ověřovat přítomnost textu 'System.OverflowException' (protože to je reálná chyba, kterou server vrací).
+3. U každé aserce napiš, jak s ní provést „Test the Tester“ (jak nasimulovat selhání aserce, abychom ověřili, že není slepá).
