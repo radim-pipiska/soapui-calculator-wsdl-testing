@@ -95,7 +95,7 @@ Pozorování (specifikaci chování pro přetečení nemám, nehodnotím jako va
 | C | Deklarace `ns1` změněna na `http://tempura.org/` | 12 | FAILED (element v tom namespace není) |
 | D | V **requestu** `xmlns:tem` změněno na `http://tempura.org/` | **0** bez chyby | XPath Match FAILED (čekáno 12 nebo 99, přišlo 0) |
 | E | Očekávaná hodnota 13 místo 12 | 12 | FAILED |
-| F | Očekávaná hodnota `12` plus nový řádek | 12 | FAILED `[OVĚŘIT screenshotem]` |
+| F | Očekávaná hodnota `12` plus nový řádek | 12 | [FAILED](screenshots/add_input_12_newline.png) |
 | G | Divide: Valid HTTP Status Codes změněno z 500 na `200` | Fault, HTTP 500 | FAILED: `Response status code:500 is not in acceptable list of status codes` |
 | H | Divide: XPath Match na `faultcode`, očekáváno `soap:Client` | `soap:Server` | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/';//soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]` |
 | I | Divide: aserce SOAP Fault nahrazena aserci Not SOAP Fault | Fault | FAILED: `Response is a SOAP Fault` |
@@ -129,12 +129,12 @@ Hypotéza k D (nepotvrzeno): server nenalezené `intA` a `intB` vzal jako výcho
 - [x] SOAPAction pro Add ověřit ve WSDL
 - [x] Zjistit, zda Schema Compliance a SOAP Response projdou na Faultu (projdou)
 - [x] Aserce Valid HTTP Status Codes, SOAP Fault a XPath na `faultcode` na Divide
-- [ ] Vrátit aserce na Divide do výchozího zeleného stavu a znovu exportovat projekt
-- [ ] Doplnit názvy bindingů z WSDL
+- [x] Vrátit aserce na Divide do výchozího zeleného stavu a znovu exportovat projekt
+- [x] Doplnit názvy bindingů z WSDL
 - [x] Hranice typu `int` (viz XSD) na Add: 2147483647 + 1
 - [x] Klon `Add - overflow`: aserce Valid HTTP Status Codes (500), SOAP Fault a XPath na `faultcode`
 - [x] Samostatný request `Add - max valid` (2147483646 + 1) se zelenou asercí na `2147483647`
 - [x] HTTP status u 2147483646 + 1 (200)
 - [ ] Sabotáž XPath Match na `faultcode` u `Add - overflow` (doslovná hláška)
-- [ ] Doplnit hodnotu Valid HTTP Status Codes u `Add - max valid`
-- [ ] Doplnit screenshoty do `screenshots/`
+- [x] Doplnit hodnotu Valid HTTP Status Codes u `Add - max valid`
+- [x] Doplnit screenshoty do `screenshots/`
