@@ -34,6 +34,7 @@ AI mi navrhuje aserce, ale **nic nedokazuje**. Důkaz je běh v SoapUI a doslovn
 - Wildcard na jednořádkové hodnotě: `faultcode` s Expected `soap:*` je zelený.
 - Varianta bez wildcardů: XPath `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')` s Expected `true` je zelená `[sabotáž zatím neproběhla]`.
 - Náhradní řešení pro `faultstring`: aserce **Contains** s obsahem `System.OverflowException` je zelená. Sabotáž `System.DivideByZeroException` dala `Missing token [System.DivideByZeroException] in Response`. Contains je slabší než XPath Match, protože hledá v celé odpovědi, ne v jednom elementu.
+- Domněnku, že wildcard selhává kvůli novým řádkům, jsem vyvrátil experimentem (normalize-space, jeden řádek, aserce selhala dál). Příčina zůstává neznámá, spolehlivé řešení je contains().
 
 ## Poučení z vlastních chyb
 
