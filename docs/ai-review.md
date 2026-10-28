@@ -1,3 +1,4 @@
+<!-- KONCEPT: před zveřejněním přepsat vlastními slovy, projít každý řádek proti vlastním logům a smazat tento řádek -->
 # Kontrola výstupů AI při psaní asercí (SoapUI, Calculator)
 
 Nástroj: SoapUI 5.10.0. Služba: veřejná demo služba třetí strany `http://www.dneonline.com/calculator.asmx`.
@@ -25,12 +26,13 @@ AI mi navrhuje aserce, ale **nic nedokazuje**. Důkaz je běh v SoapUI a doslovn
 | 3 | Platná odpověď obsahuje `DivideResult` a HTTP 200 | 2 / 2 vrací HTTP 200 a `<DivideResult>1</DivideResult>` | Správně, ale AI to neoznačila jako předpoklad |
 | 4 | Test platným vstupem `4 / 2` (výstup CZ) | Prompt žádal `2 / 2` | Odchylka od zadání |
 | 5 | Aserce na `faultstring` s hvězdičkami (`*Server was unable to process request.*System.OverflowException: Arithmetic operation resulted in an overflow.*`, Allow Wildcards zaškrtnuto) projde | Aserce byla červená už ve výchozím stavu na Divide 2 / 0 | Nefunguje |
-| 6 | Prostřední hvězdička pohltí konce řádků (výstup CZ) | Nový řádek je v textu až za `overflow.`, mezi `request.` a `System` je jen ` ---> `. Po převedení na jeden řádek (`normalize-space`) aserce selhala také | Vysvětlení AI je chybné. Skutečná příčina selhání zatím nezjištěna |
+| 6 | Prostřední hvězdička pohltí konce řádků (výstup CZ) | Nový řádek je v textu až za `overflow.`, mezi `request.` a `System` je jen ` ---> `. Po převedení na jeden řádek (`normalize-space`) aserce selhala také | Vysvětlení AI je chybné. Selhaly i jednodušší výrazy `System.Web.Services.Protocols.SoapException*` a `*System.OverflowException*`. Příčina zatím nezjištěna (podezření na tečku ve výrazu, neověřeno) |
 | 7 | „Stoprocentní jistota“ po provedení sabotáže | Sabotáž ukazuje, že aserce umí selhat, ne že je celá sada správná | Přehnané tvrzení |
 
 ## Co jsem ověřil, že funguje
 
 - Wildcard na jednořádkové hodnotě: `faultcode` s Expected `soap:*` je zelený.
+- Varianta bez wildcardů: XPath `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')` s Expected `true` je zelená `[sabotáž zatím neproběhla]`.
 - Náhradní řešení pro `faultstring`: aserce **Contains** s obsahem `System.OverflowException` je zelená. Sabotáž `System.DivideByZeroException` dala `Missing token [System.DivideByZeroException] in Response`. Contains je slabší než XPath Match, protože hledá v celé odpovědi, ne v jednom elementu.
 
 ## Poučení z vlastních chyb
@@ -41,5 +43,5 @@ AI mi navrhuje aserce, ale **nic nedokazuje**. Důkaz je běh v SoapUI a doslovn
 
 ## Otevřené
 
-- Příčina selhání výrazu s více hvězdičkami a tečkami `[DOPLNIT po úloze 14]`
-- Zda `contains()` v XPath Match nahradí wildcard `[DOPLNIT]`
+- Příčina selhání wildcardů ve výrazech s tečkou `[DOPLNIT po úloze 15]`
+- Sabotáž aserce s `contains()` `[DOPLNIT]`
