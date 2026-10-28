@@ -1,4 +1,3 @@
-<!-- KONCEPT: před zveřejněním přepsat vlastními slovy, projít každý řádek proti vlastním logům a smazat tento řádek -->
 # Kontrola výstupů AI při psaní asercí (SoapUI, Calculator)
 
 Nástroj: SoapUI 5.10.0. Služba: veřejná demo služba třetí strany `http://www.dneonline.com/calculator.asmx`.
