@@ -45,4 +45,3 @@ AI mi navrhuje aserce, ale **nic nedokazuje**. Důkaz je běh v SoapUI a doslovn
 ## Otevřené
 
 - Příčina selhání wildcardů ve výrazech s tečkou `[DOPLNIT po úloze 15]`
-- Sabotáž aserce s `contains()` `[DOPLNIT]`
