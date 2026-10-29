@@ -114,13 +114,17 @@ Pozorování (specifikaci chování pro přetečení nemám, nehodnotím jako va
 | T | Test wildcardu: Expected `soap:*` (Allow Wildcards) na XPath `faultstring` (měl být `faultcode`) | Fault | FAILED: `expecting [soap:*], actual was [System.Web.Services.Protocols.SoapException: ...]`. Nic nedokazuje, `faultstring` nezačíná `soap:`. Test zopakovat na `faultcode` |
 | U | Divide 2 / 0, aserce Contains s obsahem `System.OverflowException` | Fault | VALID (zelená ve výchozím stavu) |
 | V | Divide 2 / 0, XPath `//soap:Envelope/soap:Body/soap:Fault/faultcode`, Expected `soap:*`, Allow Wildcards | Fault | VALID (wildcard funguje na jednořádkové hodnotě) |
-| W | Divide 2 / 0, XPath `normalize-space(//soap:Fault/faultstring)` (jeden řádek), Expected `*Server was unable to process request.*System.OverflowException: Arithmetic operation resulted in an overflow.*`, Allow Wildcards | Fault | FAILED i na jednom řádku: `expecting [*...overflow.*], actual was [System.Web.Services.Protocols.SoapException: Server was unable to process request. ---> System.OverflowException: Arithmetic operation resulted in an overflow. at Calculator.Divide(Int32 intA, Int32 intB) in G:\...:line 19 --- End of inner exception stack trace ---]`. Hypotéza o novém řádku vyvrácena, příčina neznámá |
+| W | Divide 2 / 0, XPath `normalize-space(//soap:Fault/faultstring)` (jeden řádek), Expected `*Server was unable to process request.*System.OverflowException: Arithmetic operation resulted in an overflow.*`, Allow Wildcards | Fault | FAILED i na jednom řádku: `expecting [*...overflow.*], actual was [System.Web.Services.Protocols.SoapException: Server was unable to process request. ---> System.OverflowException: Arithmetic operation resulted in an overflow. at Calculator.Divide(Int32 intA, Int32 intB) in G:\...:line 19 --- End of inner exception stack trace ---]`. Pokus měnil dvě věci najednou (konce řádků a typ výsledku), proto hypotézu o novém řádku nevyvrací ani nepotvrzuje. Příčina neznámá |
 | X | Divide 2 / 0, aserce Contains s obsahem `System.DivideByZeroException` | Fault | FAILED: `Missing token [System.DivideByZeroException] in Response` |
 | Y | `Divide - request` 2 / 2 (happy path), XPath `//ns1:DivideResult`, očekáváno `2` místo `1` | `DivideResult` = 1 | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; declare namespace ns1='http://tempuri.org/'; //ns1:DivideResult], expecting [2], actual was [1]`. Výchozí stav před sabotáží: 5 aserací zelených (SOAP Response, Valid HTTP Status Codes, Schema Compliance, Not SOAP Fault, XPath Match) |
 | Z | `Divide - request` 7 / 2 (bez specifikace, pozorování) | `DivideResult` = **4**, bez Faultu | Tip předem 4 (zaokrouhlení 3,5) byl správný. Výsledek není celočíselné dělení s oříznutím (to by dalo 3). Možné vysvětlení: zaokrouhlení nebo zaokrouhlení nahoru `[HYPOTÉZA]` |
-| AA | Divide 2 / 0, wildcard na `normalize-space(//soap:Fault/faultstring)`: A) `System.Web.Services.Protocols.SoapException*`, B) `*System.OverflowException*`, C) `*Server was unable to process request.*System.OverflowException*` | Fault | **Všechny tři FAILED** (tip A selže: správně, B projde: chybně, C selže: správně). Přitom `soap:*` na `faultcode` funguje. Hypotéza o více hvězdičkách i o novém řádku je vyvrácena, příčina neznámá. Podezření: tečka ve výrazu `[HYPOTÉZA]` |
+| AA | Divide 2 / 0, wildcard na `normalize-space(//soap:Fault/faultstring)`: A) `System.Web.Services.Protocols.SoapException*`, B) `*System.OverflowException*`, C) `*Server was unable to process request.*System.OverflowException*` | Fault | **Všechny tři FAILED** (tip A selže: správně, B projde: chybně, C selže: správně). Přitom `soap:*` na `faultcode` funguje. Hypotéza o více hvězdičkách je vyvrácena (selhal i výraz s jednou hvězdičkou). O novém řádku a o tečce neříká nic jistého, viz řádek AF. Příčina neznámá |
 | AB | Divide 2 / 0, XPath `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')`, Expected `true` | Fault | VALID (zelená ve výchozím stavu, sabotáž zatím neproběhla) |
-| AC | Divide 2 / 0, `faultcode` s `soap:*`: změněna deklarace prefixu na `xsoap`, ale zbytek cesty zůstal `soap:Body/soap:Fault` | Fault | FAILED. Pravděpodobně chyba výrazu (nedeklarovaný prefix `soap`), ne neshoda hodnoty `[OVĚŘIT celou hlášku]`. Sabotáž je potřeba zopakovat změnou jen Expected na `xsoap:*` |
+| AC | Divide 2 / 0, `faultcode` s `soap:*`: změněna deklarace prefixu na `xsoap`, ale zbytek cesty zůstal `soap:Body/soap:Fault` | Fault | FAILED. Pravděpodobně chyba výrazu (nedeklarovaný prefix `soap`), ne neshoda hodnoty `[OVĚŘIT celou hlášku]`. Správně zopakováno jako řádek AD |
+| AD | Divide 2 / 0, `faultcode`, XPath `//soap:Envelope/soap:Body/soap:Fault/faultcode`, Expected změněno na `xsoap:*` (jen hodnota) | Fault | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; //soap:Envelope/soap:Body/soap:Fault/faultcode], expecting [xsoap:*], actual was [soap:Server]` |
+| AE | Divide 2 / 0, `contains(normalize-space(//soap:Fault/faultstring), 'System.DivideByZeroException')`, Expected `true` | Fault | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; contains(normalize-space(//soap:Fault/faultstring), 'System.DivideByZeroException')], expecting [true], actual was [false]`. Tip předem `Missing content` byl chybný: funkce vrací vždy `true` nebo `false` `[OVĚŘIT na 2 / 2]` |
+| AF | Divide 2 / 0, `normalize-space(//soap:Fault/faultstring)`, Allow Wildcards, Expected D) `*unable*`, F) `System*` | Fault | Obě FAILED. Tečka ve výrazu tedy není příčina (tyto výrazy ji nemají). `normalize-space` ale mění typ výsledku, takže nelze říct, zda vadí wildcard na funkci, nebo vlastnosti textu `[OVĚŘIT: soap:* na normalize-space(faultcode)]` |
+| AG | Divide 0 / 0 | Stejný Fault jako 2 / 0 (`System.OverflowException`, `Calculator.Divide`, řádek 19) | Tip předem `OverflowException` byl správný. Konzistentní s hypotézou o dělení desetinných čísel s převodem na `int` (podporují ji i 7 / 2 = 4 a 2 / 0), není to důkaz `[HYPOTÉZA]` |
 
 Rozdíl mezi hláškami: `Missing content` znamená, že element v odpovědi vůbec není (zde Fault), `comparison failed ... actual was` znamená, že element je, ale má jinou hodnotu.
 
@@ -142,9 +146,9 @@ Hypotéza k D (nepotvrzeno): server nenalezené `intA` a `intB` vzal jako výcho
 - Prompt pro AI jsem opakovaně psal s chybami (useknutá URI namespace, špatná adresa služby, odpověď z jiné operace, než popisuje scénář). Kopie byla přesná, ale z jiného requestu: přesná kopie neznamená správný zdroj.
 - Kontrola výstupu AI (`soapui-divide-by-zero-assertions.md`, prompt CZ v6) proti SoapUI:
   - Hláška při selhání na 2 / 2: AI uvedla `XPath contains no matches`, skutečná hláška je `Exception:Missing content for xpath [...] in Response`. Výstup z EN promptu ji uvedl správně.
-  - Aserce na `faultstring` s hvězdičkami (Allow Wildcards zaškrtnuto) byla **červená už ve výchozím stavu** na Divide 2 / 0. Tvrzení AI, že wildcard pohltí konce řádků, se nepotvrdilo. Příčina není nový řádek (vyvráceno normalizací na jeden řádek, viz řádek W), zatím neznámá. Následná sabotáž `DivideByZeroException` proto nic nedokazuje.
+  - Aserce na `faultstring` s hvězdičkami (Allow Wildcards zaškrtnuto) byla **červená už ve výchozím stavu** na Divide 2 / 0. Tvrzení AI, že wildcard pohltí konce řádků, se nepotvrdilo. Příčinu zatím neznám. Hypotéza o novém řádku zůstává neověřená: pokus s `normalize-space` (řádek W) změnil zároveň konce řádků i typ výsledku. Následná sabotáž `DivideByZeroException` proto nic nedokazuje.
   - `DivideResult` a odpověď 200 pro 2 / 2: potvrzeno (HTTP 200, `DivideResult` = 1), AI to ale neoznačila jako předpoklad.
-  - Wildcard `soap:*` na `faultcode` funguje (zelená, řádek V). Výraz s více hvězdičkami na `faultstring` selhal i po normalizaci na jeden řádek (řádek W). Hypotéza o novém řádku je vyvrácena, příčina zůstává neznámá.
+  - Wildcard `soap:*` na `faultcode` funguje (zelená, řádek V). Výraz s více hvězdičkami na `faultstring` selhal i po normalizaci na jeden řádek (řádek W). Hypotéza o novém řádku zůstává neověřená (pokus W měnil dvě věci najednou), příčina je neznámá.
   - Výstup z EN promptu obsahuje „Prohlášení o předpokladech“, výstup z CZ ne. Pokud oba prompty běžely ve stejné konverzaci, nejsou výsledky nezávislé `[OVĚŘIT]`.
 
 ## 6b. Řetězení kroků: TestSuite „Calculator“, TestCase „Chain“
@@ -196,11 +200,13 @@ Závěry:
 - [x] Sabotáž aserce Contains (`System.DivideByZeroException`)
 - [x] Wildcard na `faultstring` nahrazen funkcí `contains()` (zelená). Příčina selhání wildcardů zatím neznámá
 - [x] Odstranit sabotážní kopii aserce Contains (DivideByZeroException) před exportem
-- [ ] Sabotáž aserce `soap:*` na `faultcode`: zopakovat změnou jen Expected na `xsoap:*` (původní pokus měl rozbitý výraz)
-- [ ] Sabotáž aserce s `contains()` (např. `System.DivideByZeroException`), tip předem na hlášku
-- [ ] Přejmenovat aserci `soap:faultstring Wildcard` (už nepoužívá wildcard) a odškrtnout Allow Wildcards
-- [ ] Vrátit `Divide - request` na 2 / 2 a Expected `1` (po pokusech zůstalo 7 / 2 a očekávané 2)
-- [ ] Zjistit příčinu selhání wildcardů: testovat bez tečky (`*unable*`, `System*`)
+- [x] Sabotáž aserce `soap:*` na `faultcode` (jen Expected na `xsoap:*`)
+- [x] Sabotáž aserce s `contains()` (`System.DivideByZeroException`)
+- [x] Vrátit `Divide - request` na 2 / 2 a Expected `1`
+- [x] Test bez tečky: `*unable*` i `System*` selhaly
+- [ ] Aserci `XPath Match - Sabotage` vrátit na `System.OverflowException` (zelená) a pojmenovat podle toho, co kontroluje, ne podle experimentu; odškrtnout Allow Wildcards
+- [ ] Zjistit, zda wildcard funguje na výsledku funkce: `normalize-space(//soap:Fault/faultcode)` s Expected `soap:*`
+- [ ] Obnovit zelený výchozí stav kroku `Divide by Zero` (teď 3 červené aserce) a znovu exportovat projekt
 - [x] Divide: happy path (2 / 2 -> 1) vytvořen, 5 zelených aserací; `Divide by Zero` je samostatný krok
 - [x] Chain: doplnit celou hlášku Saxon z kroku Property Transfer
 - [ ] Zkontrolovat výstup AI (`soapui-divide-by-zero-assertions.md`, vygenerováno promptem CZ v6) proti skutečnému SoapUI
