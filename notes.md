@@ -185,7 +185,7 @@ Závěry:
 - [x] Zjistit, zda Schema Compliance a SOAP Response projdou na Faultu (projdou)
 - [x] Aserce Valid HTTP Status Codes, SOAP Fault a XPath na `faultcode` na Divide
 - [ ] Vrátit aserce na Divide do výchozího zeleného stavu a znovu exportovat projekt
-- [ ] Doplnit názvy bindingů z WSDL
+- [x] Doplnit názvy bindingů z WSDL
 - [x] Hranice typu `int` (viz XSD) na Add: 2147483647 + 1
 - [x] Klon `Add - overflow`: aserce Valid HTTP Status Codes (500), SOAP Fault a XPath na `faultcode`
 - [x] Samostatný request `Add - max valid` (2147483646 + 1) se zelenou asercí na `2147483647`
@@ -211,4 +211,4 @@ Závěry:
 - [x] Chain: doplnit celou hlášku Saxon z kroku Property Transfer
 - [ ] Zkontrolovat výstup AI (`soapui-divide-by-zero-assertions.md`, vygenerováno promptem CZ v6) proti skutečnému SoapUI
 - [ ] Doplnit hodnotu Valid HTTP Status Codes u `Add - max valid`
-- [ ] Doplnit screenshoty do `screenshots/`
+- [x] Doplnit screenshoty do `screenshots/`
