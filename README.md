@@ -52,6 +52,6 @@ Rozpracováno. Poslední ověřený zelený běh: 30.10.2026. Otevřené body js
 
 Tento projekt je open-source a je licencován pod MIT licencí.
 
-Copyright (c) 2026 Radimp
+Copyright (c) 2026 Radim Pipiška
 
 Povoluje se bezplatné používání, kopírování, modifikace a distribuce tohoto testovacího projektu pro jakékoli účely, bez jakýchkoli omezení. Projekt je poskytován "jak stojí a leží", bez jakékoli záruky.
