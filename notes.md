@@ -184,7 +184,7 @@ Závěry:
 - [x] SOAPAction pro Add ověřit ve WSDL
 - [x] Zjistit, zda Schema Compliance a SOAP Response projdou na Faultu (projdou)
 - [x] Aserce Valid HTTP Status Codes, SOAP Fault a XPath na `faultcode` na Divide
-- [ ] Vrátit aserce na Divide do výchozího zeleného stavu a znovu exportovat projekt
+- [x] Vrátit aserce na Divide do výchozího zeleného stavu a znovu exportovat projekt
 - [x] Doplnit názvy bindingů z WSDL
 - [x] Hranice typu `int` (viz XSD) na Add: 2147483647 + 1
 - [x] Klon `Add - overflow`: aserce Valid HTTP Status Codes (500), SOAP Fault a XPath na `faultcode`
@@ -204,8 +204,8 @@ Závěry:
 - [x] Sabotáž aserce s `contains()` (`System.DivideByZeroException`)
 - [x] Vrátit `Divide - request` na 2 / 2 a Expected `1`
 - [x] Test bez tečky: `*unable*` i `System*` selhaly
-- [ ] Aserci `XPath Match - Sabotage` vrátit na `System.OverflowException` (zelená) a pojmenovat podle toho, co kontroluje, ne podle experimentu; odškrtnout Allow Wildcards
-- [ ] Zjistit, zda wildcard funguje na výsledku funkce: `normalize-space(//soap:Fault/faultcode)` s Expected `soap:*`
+- [x] Aserci `XPath Match - Sabotage` vrátit na `System.OverflowException` (zelená) a pojmenovat podle toho, co kontroluje, ne podle experimentu; odškrtnout Allow Wildcards
+- [x] Zjistit, zda wildcard funguje na výsledku funkce: `normalize-space(//soap:Fault/faultcode)` s Expected `soap:*`
 - [ ] Obnovit zelený výchozí stav kroku `Divide by Zero` (teď 3 červené aserce) a znovu exportovat projekt
 - [x] Divide: happy path (2 / 2 -> 1) vytvořen, 5 zelených aserací; `Divide by Zero` je samostatný krok
 - [x] Chain: doplnit celou hlášku Saxon z kroku Property Transfer
