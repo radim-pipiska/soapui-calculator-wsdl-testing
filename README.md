@@ -12,15 +12,15 @@ Učební projekt (říjen 2026): testování SOAP API v **SoapUI 5.10.0** na ve�
 
 ## Co projekt obsahuje
 
-Projekt `Calculator` má dvě rozhraní (`CalculatorSoap` = SOAP 1.1, `CalculatorSoap12` = SOAP 1.2) a TestSuite `Calculator` se třemi TestCase:
+Projekt `Calculator` používá dvě rozhraní (`CalculatorSoap` = SOAP 1.1, `CalculatorSoap12` = SOAP 1.2) a TestSuite `Calculator` se třemi TestCase:
 
 | TestCase | Obsah |
 |---|---|
-| `Add funkce` | Add (7 + 5 = 12), hranice typu `int` (2147483646 + 1 platné, 2147483647 + 1 Fault) `[OVĚŘIT obsah proti projektu]` |
-| `Divide funkce` | happy path (2 / 2 = 1) a dělení nulou (2 / 0, SOAP Fault) |
-| `Chain` | Add, Property Transfer, Add: přenos výsledku prvního kroku do druhého |
+| `Add funkce` | `Add - request` (7 + 5 = 12), `Add - overflow` (2147483647 + 1, očekává se Fault), `Add - max valid` (2147483646 + 1 = 2147483647) |
+| `Divide funkce` | `Divide - request` (2 / 2 = 1) a `Divide by Zero` (2 / 0, SOAP Fault) |
+| `Chain` | `Add_Prvni` (200000 + 5), Property Transfer, `Add_Druhy` (výsledek + 7 = 200012) |
 
-Použité aserce: SOAP Response, Schema Compliance, XPath Match, Valid HTTP Status Codes, SOAP Fault / Not SOAP Fault, Contains.
+Použité aserce: SOAP Response, Schema Compliance, XPath Match (včetně funkce `contains()`), Valid HTTP Status Codes, SOAP Fault / Not SOAP Fault.
 
 ## Hlavní zjištění (pozorování)
 
@@ -46,12 +46,8 @@ Použité aserce: SOAP Response, Schema Compliance, XPath Match, Valid HTTP Stat
 
 ## Stav
 
-Rozpracováno. Poslední ověřený zelený běh: 29.10.2026. Otevřené body jsou na konci `notes.md`.
+Rozpracováno. Poslední ověřený zelený běh: 29. 10. 2026. Otevřené body jsou na konci `notes.md`.
 
 ## Licence
 
-Tento projekt je open-source a je licencován pod MIT licencí.
-
-Copyright (c) 2026 Radim Pipiška
-
-Povoluje se bezplatné používání, kopírování, modifikace a distribuce tohoto testovacího projektu pro jakékoli účely, bez jakýchkoli omezení. Projekt je poskytován "jak stojí a leží", bez jakékoli záruky.
+MIT, viz soubor `LICENSE`. Licence se nevztahuje na kopii WSDL služby třetí strany, kterou SoapUI ukládá do projektu.
