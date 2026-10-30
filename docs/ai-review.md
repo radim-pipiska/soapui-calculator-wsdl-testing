@@ -32,7 +32,7 @@ AI mi navrhuje aserce, ale **nic nedokazuje**. Důkaz je běh v SoapUI a doslovn
 ## Co jsem ověřil, že funguje
 
 - Wildcard na jednořádkové hodnotě uzlu: `faultcode` s Expected `soap:*` je zelený.
-- Varianta bez wildcardů: XPath `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')` s Expected `true` je zelená. Sabotáž (`System.DivideByZeroException`) dala `expecting [true], actual was [false]`. Funkce vrací jen `true` nebo `false`, takže chybějící text a chybějící element vypadají stejně `[OVĚŘIT na vstupu 2 / 2]`.
+- Varianta bez wildcardů: XPath `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')` s Expected `true` je zelená. Sabotáž (`System.DivideByZeroException`) dala `expecting [true], actual was [false]`. Funkce vrací jen `true` nebo `false`: na vstupu 2 / 2 (bez Faultu) hlásí totéž `expecting [true], actual was [false]`, takže chybějící element vypadá stejně jako chybějící text (uzlová aserce by hlásila `Missing content`).
 - Náhradní řešení: aserce **Contains** s obsahem `System.OverflowException`. Sabotáž `System.DivideByZeroException` dala `Missing token [System.DivideByZeroException] in Response`. Contains je slabší než XPath Match, protože hledá v celé odpovědi, ne v jednom elementu.
 
 ## Poučení z vlastních chyb
