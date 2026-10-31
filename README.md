@@ -31,12 +31,14 @@ Použité aserce: SOAP Response, Schema Compliance, XPath Match (včetně funkce
 5. 7 / 2 vrátí 4 (ne 3): služba nedělí celá čísla s oříznutím. Mechanismus neznám.
 6. Property Transfer: s volbou *Set null on missing source* hlásí přenos OK a pošle prázdný `intA`, server vrátí Fault. Bez ní přenos selže hned (`Missing match for Source XPath`). Přenesená hodnota zůstává v requestu i po běhu.
 7. Wildcard v XPath Match fungoval na uzlu `faultcode` (`soap:*`), ale ne na vícerádkovém uzlu `faultstring` a ne na výsledku funkce (`normalize-space(...)`). Příčinu u `faultstring` zatím neznám, aserce je řešena funkcí `contains()`.
+8. Chyba klienta (prázdný `intB`, SOAP 1.1) vrací také HTTP 500 a Fault, ale `soap:Client`. Aserce na status a SOAP Fault ji od chyby serveru neodliší, odliší ji `faultcode` a `faultstring`.
 
 ## Pracovní postup
 
 - Očekávané hodnoty počítám ze vstupů, ne z odpovědi služby.
 - U každé aserce nejdřív ověřím zelený stav, pak provedu sabotáž (změna hodnoty, namespace nebo vstupu) a zapíšu doslovnou hlášku.
 - Výstupy AI ověřuji spuštěním, viz `docs/ai-review.md`.
+- V TestCase `Chain` je `intA` v exportu záměrně `-1` (sentinel). Vypnutý přenos pak test shodí (`expecting [200012], actual was [6]`). Běh s povoleným přenosem hodnotu přepíše, proto ji před exportem vracím na `-1`.
 
 ## Jak spustit
 
@@ -46,7 +48,7 @@ Použité aserce: SOAP Response, Schema Compliance, XPath Match (včetně funkce
 
 ## Stav
 
-Rozpracováno. Poslední ověřený zelený běh: 31. 10. 2026. Otevřené body jsou na konci `notes.md`.
+Rozpracováno. Poslední ověřený zelený běh: 29. 10. 2026. Otevřené body jsou na konci `notes.md`.
 
 ## Licence
 

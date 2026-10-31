@@ -128,7 +128,8 @@ Pozorování (specifikaci chování pro přetečení nemám, nehodnotím jako va
 | AH | Divide 2 / 2 (bez Faultu), aserce `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')`, Expected `true` | úspěšná odpověď | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')], expecting [true], actual was [false]`. Tip předem správný. Aserce s funkcí nerozliší „element chybí“ od „text nesedí“ (uzlová aserce by hlásila `Missing content`) |
 | AI | Divide 2 / 0, `normalize-space(//soap:Fault/faultcode)`, Allow Wildcards, Expected `soap:*` a také `soap:Server` | Fault | **FAILED**: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; normalize-space(//soap:Fault/faultcode)], expecting [soap:*], actual was [soap:Server]`. Uzlová verze téhož (`//soap:Envelope/soap:Body/soap:Fault/faultcode`) je zelená, wildcard tedy nefunguje na výsledku funkce. Dřívější tvrzení „obě zelené“ (úloha 16) bylo chybné a nebylo doloženo screenshotem |
 | AJ | Divide by Zero, `faultcode` přesně (Allow Wildcards vypnuto), Expected změněno na `soap:Client` | Fault `soap:Server` | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; //soap:Envelope/soap:Body/soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]` |
-| AK | Chain: `intA` v `Add_Druhy` předem `-1`, Property Transfer zakázán | krok 3 pošle -1 + 7 | Očekáváno `AddResult` = 6 a hláška `expecting [200012], actual was [6]` `[OVĚŘIT doslovnou hláškou, v odpovědi bylo uvedeno jen očekávání]`. Tip předem „vše zelené“ byl chybný |
+| AK | Chain: `intA` v `Add_Druhy` předem `-1`, Property Transfer zakázán | krok 3 pošle -1 + 7 | `AddResult` = 6. Hláška: `XPathContains comparison failed for path [declare namespace soap='http://www.w3.org/2003/05/soap-envelope'; declare namespace ns1='http://tempuri.org/'; //ns1:AddResult], expecting [200012], actual was [6]`. Tip předem „vše zelené“ byl chybný |
+| AL | Divide by Zero s prázdným `intB` (`<tem:intB></tem:intB>`), rozhraní SOAP 1.1 | Fault `soap:Client`, `faultstring`: `System.Web.Services.Protocols.SoapException: Server was unable to read request. ---> System.InvalidO...` (stack trace s `ParseInt32` a `Read7_Divide`) | `faultcode` FAILED: `expecting [soap:Server], actual was [soap:Client]`. `faultstring obsahuje OverflowException` FAILED: `expecting [true], actual was [false]`. **Valid HTTP Status Codes (500) a SOAP Fault zůstaly VALID**, takže chybu klienta od chyby serveru neodliší. Tip předem: „nevím“ |
 
 Rozdíl mezi hláškami: `Missing content` znamená, že element v odpovědi vůbec není (zde Fault), `comparison failed ... actual was` znamená, že element je, ale má jinou hodnotu.
 
@@ -183,6 +184,7 @@ Závěry:
 - Při sabotáži zdroje zůstal v requestu kroku 3 poškozený dokument (`<tem:intA/></tem:intA>`, samouzavřený tag a osiřelý koncový tag). Další běh pak hlásil `Error parsing target property [error: The element type "tem:Add" must be terminated by the matching end-tag "</tem:Add>".]`. Tato hláška je zbytek po předchozím běhu nebo ruční úpravě: při čistém opakování 27. 10. se nereprodukovala. Po každé sabotáži vrátit request do platného stavu a ověřit zelený běh dřív, než přijde další sabotáž.
 - Set null on missing source mění hlasité selhání (`Missing match for Source XPath`) na tiché: transfer hlásí OK, zapíše `[null]` a request kroku 3 má prázdný `intA` (`<tem:intA/>`). Chybu pak zachytí až server (Fault `soap:Sender`) a aserce na hodnotu. Pro testy preferuji volbu nezaškrtnutou, aby řetěz selhal na správném místě.
 - V XML exportu jsou interní typy `SOAP Fault Assertion` a `Not SOAP Fault Assertion` prohozené oproti popiskům v GUI (aserce s popiskem „SOAP Fault“ má typ `Not SOAP Fault Assertion`). Chování odpovídá popiskům, ověřeno hláškou `Response is a SOAP Fault`.
+- Chyba klienta (prázdný `intB` na SOAP 1.1) vrací také HTTP 500 a Fault, ale `soap:Client`. Aserce Valid HTTP Status Codes (500) a SOAP Fault ji proto od chyby serveru neodliší, odliší ji až `faultcode` a `faultstring` (řádek AL).
 
 ## 7. Otevřené
 
@@ -214,11 +216,12 @@ Závěry:
 - [x] Wildcard na výsledku funkce nefunguje (`normalize-space(//soap:Fault/faultcode)` s `soap:*` je červené, řádek AI)
 - [x] `Divide by Zero`: Valid HTTP Status Codes (500), SOAP Fault a `faultcode` přesně `soap:Server` (sabotáž `soap:Client` je červená, řádek AJ)
 - [x] `Chain`: Set null vypnuto a `intA` v exportu `-1` (dřív zůstalo 200005, vypnutý přenos by dal falešnou zelenou)
-- [ ] `Chain`: doložit doslovnou hláškou běh se zakázaným přenosem (očekáváno `expecting [200012], actual was [6]`) a screenshotem zeleného běhu celého TestSuite
+- [x] `Chain`: běh se zakázaným přenosem doložen hláškou (řádek AK) a zelený běh celého TestSuite screenshotem (31. 10. 2026)
 - [ ] `Chain`: sentinel `-1` se při každém běhu přepíše, po běhu před exportem vždy vrátit `-1` (nebo řešit vlastností TestCase a Setup Script)
 - [x] Prázdné REST rozhraní smazáno (potvrzeno v exportu)
-- [ ] Přejmenovat aserci „XPath Match - faultcode soap:*“ v kroku `Divide by Zero` (je to přesná aserce `soap:Server`)
-- [ ] Test wildcardu na uzlu `faultstring` bez funkcí: `System*`, `*unable*`, `*System.OverflowException*`, tip předem
+- [x] Aserce na `faultcode` v kroku `Divide by Zero` přejmenována („faultcode je soap:Server“, potvrzeno v exportu)
+- [ ] (přeskočeno, volitelné) Test wildcardu na uzlu `faultstring` bez funkcí: `System*`, `*unable*`, `*System.OverflowException*`, tip předem
+- [ ] Ověřit `normalize-space(//soap:Fault/faultcode)` s doslovným Expected `soap:Server` (wildcard vypnut): v odpovědi tvrzeno zelené, bez screenshotu
 - [x] Divide: happy path (2 / 2 -> 1) vytvořen, 5 zelených aserací; `Divide by Zero` je samostatný krok
 - [x] Chain: doplnit celou hlášku Saxon z kroku Property Transfer
 - [ ] Zkontrolovat výstup AI (`soapui-divide-by-zero-assertions.md`, vygenerováno promptem CZ v6) proti skutečnému SoapUI
