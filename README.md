@@ -30,7 +30,7 @@ Použité aserce: SOAP Response, Schema Compliance, XPath Match (včetně funkce
 4. 2147483646 + 1 vrátí 2147483647, 2147483647 + 1 vrátí Fault s `OverflowException`.
 5. 7 / 2 vrátí 4 (ne 3): služba nedělí celá čísla s oříznutím. Mechanismus neznám.
 6. Property Transfer: s volbou *Set null on missing source* hlásí přenos OK a pošle prázdný `intA`, server vrátí Fault. Bez ní přenos selže hned (`Missing match for Source XPath`). Přenesená hodnota zůstává v requestu i po běhu.
-7. Wildcard v XPath Match fungoval na `faultcode` (`soap:*`), ale ne na `faultstring`. Příčina neznámá, aserce je řešena funkcí `contains()`.
+7. Wildcard v XPath Match fungoval na uzlu `faultcode` (`soap:*`), ale ne na vícerádkovém uzlu `faultstring` a ne na výsledku funkce (`normalize-space(...)`). Příčinu u `faultstring` zatím neznám, aserce je řešena funkcí `contains()`.
 
 ## Pracovní postup
 
@@ -46,7 +46,7 @@ Použité aserce: SOAP Response, Schema Compliance, XPath Match (včetně funkce
 
 ## Stav
 
-Rozpracováno. Poslední ověřený zelený běh: 30. 10. 2026. Otevřené body jsou na konci `notes.md`.
+Rozpracováno. Poslední ověřený zelený běh: 29. 10. 2026. Otevřené body jsou na konci `notes.md`.
 
 ## Licence
 
