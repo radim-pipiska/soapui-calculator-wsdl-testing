@@ -1,4 +1,3 @@
-<!-- KONCEPT: před zveřejněním přepsat vlastními slovy, projít každý řádek proti vlastním logům a smazat tento řádek -->
 # Kontrola výstupů AI při psaní asercí (SoapUI, Calculator)
 
 Nástroj: SoapUI 5.10.0. Služba: veřejná demo služba třetí strany `http://www.dneonline.com/calculator.asmx`.
@@ -6,16 +5,14 @@ Ověřováno v říjnu 2026.
 
 ## Princip
 
-AI mi navrhuje aserce, ale **nic nedokazuje**. Důkaz je běh v SoapUI a doslovné srovnání s logem. U každého tvrzení AI proto zapisuji, jak jsem ho ověřil a co vyšlo.
+AI beru jako pomocníka při návrhu asercí, ne jako zdroj ověřených faktů. Rozhodující je až **skutečný běh testu** a porovnání výsledku s logem SoapUI.
 
 ## Postup
 
-1. Do promptu dávám skutečnou odpověď zkopírovanou z karty Raw, správnou adresu služby a přesné URI namespace. Moje první verze promptů měly chyby (useknuté URI `http://w3.org`, špatná adresa, odpověď z jiné operace, než popisoval scénář), proto prompty verzuji ve složce `prompts/`.
-2. Výstup AI rozdělím na jednotlivá tvrzení.
-3. Každé tvrzení ověřím spuštěním a porovnám s logem (doslovné hlášky, chování funkcí).
-4. U každé aserce ověřím zelený stav **před** sabotáží. Aserce, která byla červená už na začátku, nic nedokazuje.
-5. Sabotáž provedu změnou očekávané hodnoty, namespace nebo vstupu a zapíšu doslovnou hlášku. Při sabotáži měním vždy jen jednu věc.
-6. Neověřené tvrzení nemažu, ale označím ho jako neověřené. Vyvrácené tvrzení zapíšu jako zjištění.
+1. Připravím prompt z ověřených podkladů: **skutečné SOAP odpovědi, správné adresy a namespace**. Použité verze promptů ukládám do složky `prompts/`.
+2. Návrhy AI rozdělím na jednotlivá tvrzení a každé samostatně prověřím v SoapUI.
+3. Nejdřív ověřím, že aserce prochází nad správnou odpovědí. Potom změním vždy jen jednu hodnotu nebo část vstupu a sleduji, zda aserce správně selže.
+4. Výsledek porovnám s logem. Nepotvrzené závěry označím jako neověřené a chybné zapíšu jako zjištění.
 
 ## Ověřená tvrzení (prompt CZ v6, výstupy CZ a EN)
 
@@ -37,10 +34,7 @@ AI mi navrhuje aserce, ale **nic nedokazuje**. Důkaz je běh v SoapUI a doslovn
 - Valid HTTP Status Codes (500) a SOAP Fault neodliší chybu klienta od chyby serveru: prázdný `intB` vrátí `soap:Client` s HTTP 500 a obě aserce zůstanou zelené. Spadne až `faultcode` a `faultstring`. Proto sada aserací nestojí na jedné aserci.
 
 ## Poučení z vlastních chyb
-
-- Nejdřív jsem sám vysvětloval selhání wildcardu „novým řádkem“. Pokus to ověřit (`normalize-space`) byl nepoužitelný: wildcard na výsledku funkce nefunguje vůbec. Při hledání příčiny měním vždy jen jednu věc a nejdřív pozitivní kontrolou ověřím, že nástroj dělá to, co od něj čekám. Moje vlastní tvrzení „obě zelené“ bez screenshotu se při opakování ukázalo jako nepravdivé: výsledek bez důkazu nezapisuji jako fakt. Pravidlo „tvrzení o chování označit jako hypotézu“ platí i pro mé vlastní závěry, ne jen pro AI.
-- Přesná kopie neznamená správný zdroj: do promptu jsem jednou vložil přesně zkopírovanou odpověď, ale z jiné operace.
-- Zelená před sabotáží, červená až po ní, a vždy přečíst důvod červené (neshoda hodnoty, chybějící obsah, rozbitý výraz).
+Při hledání příčiny nestačí odhad ani jednorázový zelený výsledek. I vlastní hypotézy musím ověřovat pozitivní kontrolou a měnit vždy jen jednu věc. Zároveň si hlídám, zda pracuji se správnou odpovědí a zda mám výsledek doložený logem nebo screenshotem. Zelená aserce před změnou a její očekávané selhání po změně jsou důležité, ale samy o sobě nepotvrzují správnost celé testovací sady.
 
 ## Otevřené
 
