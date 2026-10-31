@@ -34,6 +34,7 @@ AI mi navrhuje aserce, ale **nic nedokazuje**. Důkaz je běh v SoapUI a doslovn
 - Wildcard na jednořádkové hodnotě uzlu: `faultcode` s Expected `soap:*` je zelený. Na výsledku funkce (`normalize-space(...)`) wildcard nefunguje.
 - Varianta bez wildcardů: XPath `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')` s Expected `true` je zelená. Sabotáž (`System.DivideByZeroException`) dala `expecting [true], actual was [false]`. Funkce vrací jen `true` nebo `false`: na vstupu 2 / 2 (bez Faultu) hlásí totéž `expecting [true], actual was [false]`, takže chybějící element vypadá stejně jako chybějící text (uzlová aserce by hlásila `Missing content`).
 - Náhradní řešení: aserce **Contains** s obsahem `System.OverflowException`. Sabotáž `System.DivideByZeroException` dala `Missing token [System.DivideByZeroException] in Response`. Contains je slabší než XPath Match, protože hledá v celé odpovědi, ne v jednom elementu.
+- Valid HTTP Status Codes (500) a SOAP Fault neodliší chybu klienta od chyby serveru: prázdný `intB` vrátí `soap:Client` s HTTP 500 a obě aserce zůstanou zelené. Spadne až `faultcode` a `faultstring`. Proto sada aserací nestojí na jedné aserci.
 
 ## Poučení z vlastních chyb
 
