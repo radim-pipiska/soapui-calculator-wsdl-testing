@@ -191,8 +191,8 @@ Závěry:
 - [x] SOAPAction pro Add ověřit ve WSDL
 - [x] Zjistit, zda Schema Compliance a SOAP Response projdou na Faultu (projdou)
 - [x] Aserce Valid HTTP Status Codes, SOAP Fault a XPath na `faultcode` na Divide
-- [ ] Vrátit aserce na Divide do výchozího zeleného stavu a znovu exportovat projekt
-- [ ] Doplnit názvy bindingů z WSDL
+- [x] Vrátit aserce na Divide do výchozího zeleného stavu a znovu exportovat projekt
+- [x] Doplnit názvy bindingů z WSDL
 - [x] Hranice typu `int` (viz XSD) na Add: 2147483647 + 1
 - [x] Klon `Add - overflow`: aserce Valid HTTP Status Codes (500), SOAP Fault a XPath na `faultcode`
 - [x] Samostatný request `Add - max valid` (2147483646 + 1) se zelenou asercí na `2147483647`
@@ -217,13 +217,13 @@ Závěry:
 - [x] `Divide by Zero`: Valid HTTP Status Codes (500), SOAP Fault a `faultcode` přesně `soap:Server` (sabotáž `soap:Client` je červená, řádek AJ)
 - [x] `Chain`: Set null vypnuto a `intA` v exportu `-1` (dřív zůstalo 200005, vypnutý přenos by dal falešnou zelenou)
 - [x] `Chain`: běh se zakázaným přenosem doložen hláškou (řádek AK) a zelený běh celého TestSuite screenshotem (31. 10. 2026)
-- [ ] `Chain`: sentinel `-1` se při každém běhu přepíše, po běhu před exportem vždy vrátit `-1` (nebo řešit vlastností TestCase a Setup Script)
+- [x] `Chain`: sentinel `-1` se při každém běhu přepíše, po běhu před exportem vždy vrátit `-1` (nebo řešit vlastností TestCase a Setup Script)
 - [x] Prázdné REST rozhraní smazáno (potvrzeno v exportu)
 - [x] Aserce na `faultcode` v kroku `Divide by Zero` přejmenována („faultcode je soap:Server“, potvrzeno v exportu)
 - [ ] (přeskočeno, volitelné) Test wildcardu na uzlu `faultstring` bez funkcí: `System*`, `*unable*`, `*System.OverflowException*`, tip předem
-- [ ] Ověřit `normalize-space(//soap:Fault/faultcode)` s doslovným Expected `soap:Server` (wildcard vypnut): v odpovědi tvrzeno zelené, bez screenshotu
+- [x] Ověřit `normalize-space(//soap:Fault/faultcode)` s doslovným Expected `soap:Server` (wildcard vypnut): v odpovědi tvrzeno zelené, bez screenshotu
 - [x] Divide: happy path (2 / 2 -> 1) vytvořen, 5 zelených aserací; `Divide by Zero` je samostatný krok
 - [x] Chain: doplnit celou hlášku Saxon z kroku Property Transfer
 - [ ] Zkontrolovat výstup AI (`soapui-divide-by-zero-assertions.md`, vygenerováno promptem CZ v6) proti skutečnému SoapUI
-- [ ] Doplnit hodnotu Valid HTTP Status Codes u `Add - max valid`
-- [ ] Doplnit screenshoty do `screenshots/`
+- [x] Doplnit hodnotu Valid HTTP Status Codes u `Add - max valid`
+- [x] Doplnit screenshoty do `screenshots/`
