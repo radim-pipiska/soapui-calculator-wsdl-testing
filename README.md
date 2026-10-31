@@ -48,7 +48,7 @@ Použité aserce: SOAP Response, Schema Compliance, XPath Match (včetně funkce
 
 ## Stav
 
-Rozpracováno. Poslední ověřený zelený běh: 29. 10. 2026. Otevřené body jsou na konci `notes.md`.
+Rozpracováno. Poslední ověřený zelený běh: 31. 10. 2026. Otevřené body jsou na konci `notes.md`.
 
 ## Licence
 
