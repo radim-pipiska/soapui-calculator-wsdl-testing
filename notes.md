@@ -71,7 +71,7 @@ Aserce (dva samostatné requesty, oba ve výchozím stavu zelené):
 
 | Request | Vstup | Aserce |
 |---|---|---|
-| `Add - max valid` | 2147483646 + 1 | Valid HTTP Status Codes `[DOPLNIT hodnotu]`, Not SOAP Fault, XPath Match na `AddResult` = `2147483647` |
+| `Add - max valid` | 2147483646 + 1 | Valid HTTP Status Codes `200`, Not SOAP Fault, XPath Match na `AddResult` = `2147483647` |
 | `Add - overflow` | 2147483647 + 1 | Valid HTTP Status Codes (500), SOAP Fault, XPath Match na `faultcode` = `soap:Server` |
 
 Pozorování (specifikaci chování pro přetečení nemám, nehodnotím jako vadu):
@@ -130,6 +130,7 @@ Pozorování (specifikaci chování pro přetečení nemám, nehodnotím jako va
 | AJ | Divide by Zero, `faultcode` přesně (Allow Wildcards vypnuto), Expected změněno na `soap:Client` | Fault `soap:Server` | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; //soap:Envelope/soap:Body/soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]` |
 | AK | Chain: `intA` v `Add_Druhy` předem `-1`, Property Transfer zakázán | krok 3 pošle -1 + 7 | `AddResult` = 6. Hláška: `XPathContains comparison failed for path [declare namespace soap='http://www.w3.org/2003/05/soap-envelope'; declare namespace ns1='http://tempuri.org/'; //ns1:AddResult], expecting [200012], actual was [6]`. Tip předem „vše zelené“ byl chybný |
 | AL | Divide by Zero s prázdným `intB` (`<tem:intB></tem:intB>`), rozhraní SOAP 1.1 | Fault `soap:Client`, `faultstring`: `System.Web.Services.Protocols.SoapException: Server was unable to read request. ---> System.InvalidO...` (stack trace s `ParseInt32` a `Read7_Divide`) | `faultcode` FAILED: `expecting [soap:Server], actual was [soap:Client]`. `faultstring obsahuje OverflowException` FAILED: `expecting [true], actual was [false]`. **Valid HTTP Status Codes (500) a SOAP Fault zůstaly VALID**, takže chybu klienta od chyby serveru neodliší. Tip předem: „nevím“ |
+| AM | Divide 2 / 0, pozitivní kontrola: `normalize-space(//soap:Fault/faultcode)`, Expected doslovně `soap:Server`, Allow Wildcards **vypnuto** | Fault `soap:Server` | VALID (zelená, tip předem správný). Funkce tedy vrací správný text a selhává jen wildcard (`soap:*`, řádek AI). Mechanismus neznám. Aserce po pokusu smazána |
 
 Rozdíl mezi hláškami: `Missing content` znamená, že element v odpovědi vůbec není (zde Fault), `comparison failed ... actual was` znamená, že element je, ale má jinou hodnotu.
 
@@ -158,13 +159,13 @@ Hypotéza k D (nepotvrzeno): server nenalezené `intA` a `intB` vzal jako výcho
 
 ## 6b. Řetězení kroků: TestSuite „Calculator“, TestCase „Chain“
 
-Kroky: `Add_Prvni` (100000 + 23) -> `Property Transfer` -> `Add_Druhy` (intA z přenosu + 7).
+Kroky: `Add_Prvni` (100000 + 23) -> `Property Transfer` -> `Add_Druhy` (intA z přenosu + 7). Ve finálním projektu: `Add_Prvni` 200000 + 5, `Add_Druhy` očekává 200012.
 
 Property Transfer:
 
 - Zdroj: `Add_Prvni`, Response: `declare namespace ns1='http://tempuri.org/'; //ns1:AddResult`
 - Cíl: `Add_Druhy`, Request: `declare namespace tem='http://tempuri.org/'; //tem:Add/tem:intA`
-- Nastavení: Fail transfer on error, Transfer text content, Set null on missing source (zaškrtnuto)
+- Nastavení při prvních pokusech: Fail transfer on error, Transfer text content, Set null on missing source (zaškrtnuto). Ve finálním projektu je Set null vypnuto.
 
 | Situace | Výsledek |
 |---|---|
@@ -221,9 +222,13 @@ Závěry:
 - [x] Prázdné REST rozhraní smazáno (potvrzeno v exportu)
 - [x] Aserce na `faultcode` v kroku `Divide by Zero` přejmenována („faultcode je soap:Server“, potvrzeno v exportu)
 - [ ] (přeskočeno, volitelné) Test wildcardu na uzlu `faultstring` bez funkcí: `System*`, `*unable*`, `*System.OverflowException*`, tip předem
-- [x] Ověřit `normalize-space(//soap:Fault/faultcode)` s doslovným Expected `soap:Server` (wildcard vypnut): v odpovědi tvrzeno zelené, bez screenshotu
+- [x] Ověřit `normalize-space(//soap:Fault/faultcode)` s doslovným Expected `soap:Server` (wildcard vypnut): zelená, doloženo screenshotem 31. 10. 2026 (řádek AM)
 - [x] Divide: happy path (2 / 2 -> 1) vytvořen, 5 zelených aserací; `Divide by Zero` je samostatný krok
 - [x] Chain: doplnit celou hlášku Saxon z kroku Property Transfer
-- [ ] Zkontrolovat výstup AI (`soapui-divide-by-zero-assertions.md`, vygenerováno promptem CZ v6) proti skutečnému SoapUI
+- [x] Zkontrolovat výstup AI (`soapui-divide-by-zero-assertions.md`, vygenerováno promptem CZ v6) proti skutečnému SoapUI (výsledky v `docs/ai-review.md`)
 - [x] Doplnit hodnotu Valid HTTP Status Codes u `Add - max valid`
 - [x] Doplnit screenshoty do `screenshots/`
+- [ ] Ověřit v requestu SoapUI, jak SOAP 1.2 přenáší action (sekce 1, řádek s `[OVĚŘIT]`)
+- [ ] Řádek F (očekávaná hodnota `12` plus nový řádek): doložit screenshotem nebo smazat
+- [ ] Výstupy AI CZ a EN: ověřit, zda běžely v nezávislých chatech (sekce 6, `[OVĚŘIT]`)
+- [ ] Před posledním exportem: po každém běhu Chainu vrátit `intA` v `Add_Druhy` na `-1`
