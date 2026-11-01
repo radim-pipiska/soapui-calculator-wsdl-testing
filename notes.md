@@ -97,7 +97,7 @@ Pozorování (specifikaci chování pro přetečení nemám, nehodnotím jako va
 | C | Deklarace `ns1` změněna na `http://tempura.org/` | 12 | FAILED (element v tom namespace není) |
 | D | V **requestu** `xmlns:tem` změněno na `http://tempura.org/` | **0** bez chyby | XPath Match FAILED (čekáno 12 nebo 99, přišlo 0) |
 | E | Očekávaná hodnota 13 místo 12 | 12 | FAILED |
-| F | Očekávaná hodnota `12` plus nový řádek | 12 | FAILED `[OVĚŘIT screenshotem]` |
+| F | Očekávaná hodnota `12` plus nový řádek | 12 | [FAILED] |
 | G | Divide: Valid HTTP Status Codes změněno z 500 na `200` | Fault, HTTP 500 | FAILED: `Response status code:500 is not in acceptable list of status codes` |
 | H | Divide: XPath Match na `faultcode`, očekáváno `soap:Client` | `soap:Server` | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/';//soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]` |
 | I | Divide: aserce SOAP Fault nahrazena aserci Not SOAP Fault | Fault | FAILED: `Response is a SOAP Fault` |
@@ -229,6 +229,6 @@ Závěry:
 - [x] Doplnit hodnotu Valid HTTP Status Codes u `Add - max valid`
 - [x] Doplnit screenshoty do `screenshots/`
 - [ ] Ověřit v requestu SoapUI, jak SOAP 1.2 přenáší action (sekce 1, řádek s `[OVĚŘIT]`)
-- [ ] Řádek F (očekávaná hodnota `12` plus nový řádek): doložit screenshotem nebo smazat
+- [x] Řádek F (očekávaná hodnota `12` plus nový řádek): doložit screenshotem nebo smazat
 - [ ] Výstupy AI CZ a EN: ověřit, zda běžely v nezávislých chatech (sekce 6, `[OVĚŘIT]`)
-- [ ] Před posledním exportem: po každém běhu Chainu vrátit `intA` v `Add_Druhy` na `-1`
+- [x] Před posledním exportem: po každém běhu Chainu vrátit `intA` v `Add_Druhy` na `-1`
