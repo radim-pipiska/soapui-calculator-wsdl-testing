@@ -34,7 +34,14 @@ AI beru jako pomocníka při návrhu asercí, ne jako zdroj ověřených faktů.
 - Valid HTTP Status Codes (500) a SOAP Fault neodliší chybu klienta od chyby serveru: prázdný `intB` vrátí `soap:Client` s HTTP 500 a obě aserce zůstanou zelené. Spadne až `faultcode` a `faultstring`. Proto sada aserací nestojí na jedné aserci.
 
 ## Poučení z vlastních chyb
-Při hledání příčiny nestačí odhad ani jednorázový zelený výsledek. I vlastní hypotézy musím ověřovat pozitivní kontrolou a měnit vždy jen jednu věc. Zároveň si hlídám, zda pracuji se správnou odpovědí a zda mám výsledek doložený logem nebo screenshotem. Zelená aserce před změnou a její očekávané selhání po změně jsou důležité, ale samy o sobě nepotvrzují správnost celé testovací sady.
+
+Při testování jsem zjistil, že stejnou přísnost, jakou používám při kontrole výstupů AI, musím uplatňovat i na vlastní závěry.
+
+Například jsem dříve napsal, že obě aserce jsou zelené, ale neměl jsem k tomu screenshot. Při opakování testu se ukázalo, že to nebyla pravda. U aserce `normalize-space(//soap:Fault/faultcode)` s wildcardem `soap:*` test ve skutečnosti selhal.
+
+Další příklad je moje hypotéza, že wildcard na **faultstring** nefunguje kvůli novému řádku v textu. Pokusy s **normalize-space()** ale nebyly pro ověření této hypotézy použitelné, protože jsem následně zjistil, že wildcard nefunguje ani na výsledku této funkce. Pozitivní kontrola s doslovnou hodnotou `soap:Server` přitom prošla. Příčina chování wildcardu tedy zůstává neznámá.
+
+Hlavní poučení: Rozlišuji mezi předpokladem, pozorováním a ověřeným závěrem. Než vyvodím závěr, nejdříve ověřím správnou funkci nástroje a následně výsledek doložím logem nebo screenshotem.
 
 ## Otevřené
 
