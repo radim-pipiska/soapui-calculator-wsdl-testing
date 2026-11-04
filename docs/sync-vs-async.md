@@ -9,7 +9,7 @@ Shrnutí osvědčených postupů pro QA testery při ověřování asynchronníc
 * **E-shop (Asynchronní proces):** Zboží objednáš, okamžitě dostaneš potvrzení o přijetí objednávky a můžeš jít dělat cokoliv jiného. Mezitím na pozadí běží X dalších transakcí (ověření skladu, doprava z jiného skladu, balení, expedice) a ty jen čekáš na kurýra.
 
 V reálném API tomuto chování odpovídá tato dvojice stavů:
-* **HTTP 202 Accepted:** E-shop ti poslal e-mail *„Objednávka přijata“*. Systém potvrdil, že požadavek je validní a začal na něm pracovat, ale konečný výsledek ještě neznáš.
+* **HTTP 202 Accepted:** E-shop ti poslal e-mail *„Objednávka přijata“*. Systém potvrdil, že požadavek přijal.
 * **Konečný stav (např. HTTP 200 s detailem doručení):** Kurýr ti předal balíček do ruky. Úloha byla úspěšně dokončena.
 
 ## 2. Jak používat AI při psaní aserací bez pasti slepé důvěry?
