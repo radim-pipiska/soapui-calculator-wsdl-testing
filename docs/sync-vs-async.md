@@ -45,8 +45,10 @@ Smyčka opakovaných GET dotazů na stav objednávky musí končit přesně **t�
 
 Abychom ověřili, že náš testovací skript správně reaguje na chování systému, musíme nasadit trojici sabotážních mocků:
 
-| Sabotážní scénář (Mock) | Co testuje a ověřuje | Očekávaný výsledek v logu / hláška |
-| :--- | :--- | :--- |
-| **1. Věčný stav `PROCESSING`** | Prověří hlídače limitu pokusů (že test nezůstane viset navždy). | **Červený test:** „Nedokončeno v limitu“ *(+ ID a počet pokusů)* |
-| **2. Okamžitý stav `FAILED`** | Prověří, že test nezůstane zelený, když proces v aplikaci selže. | **Červený test:** „Objednávka selhala ve stavu FAILED“ |
-| **3. Neočekávaný stav (např. `UNKNOWN`)** | Prověří hlídače neznámých stavů stojících mimo specifikaci. | **Červený test:** „Detekován neznámý stav: UNKNOWN“ |
+
+| Sabotážní scénář (Mock) | Co testuje a ověřuje | Očekávaný výsledek v logu / hláška | Skutečný výsledek v logu / screenshot |
+| :--- | :--- | :--- | :--- |
+| **1. Věčný stav `PROCESSING`** | Prověří hlídače limitu pokusů (že test nezůstane viset navždy). | **Červený test:** „Nedokončeno v limitu“ *(+ ID a počet pokusů)* | *neprovedeno* |
+| **2. Okamžitý stav `FAILED`** | Prověří, že test nezůstane zelený, když proces v aplikaci selže. | **Červený test:** „Objednávka selhala ve stavu FAILED“ | *neprovedeno* |
+| **3. Neočekávaný stav (např. `UNKNOWN`)** | Prověří hlídače neznámých stavů stojících mimo specifikaci. | **Červený test:** „Detekován neznámý stav: UNKNOWN“ | *neprovedeno* |
+
