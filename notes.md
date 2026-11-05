@@ -233,4 +233,4 @@ Závěry:
 - [ ] Výstupy AI CZ a EN: ověřit, zda běžely v nezávislých chatech (sekce 6, `[OVĚŘIT]`)
 - [x] Před posledním exportem: po každém běhu Chainu vrátit `intA` v `Add_Druhy` na `-1`
 - [x] E-mail v commitech: v GitHub Desktop a v Settings → Emails zapnuto skrytí e-mailové adresy, jinak je v historii vidět.
-- [x] Kontrola e-mailu ve starších commitech: v terminálu Codespaces použit příkaz [git log --format='%ae %ce' | sort -u](screenshots/Checking_email_in_older_commits.png)
+- [x] [Kontrola e-mailu ve starších commitech](screenshots/Checking_email_in_older_commits.png): v terminálu Codespaces použit příkaz `git log --format='%ae %ce' | sort -u`
