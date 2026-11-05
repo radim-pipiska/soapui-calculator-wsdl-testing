@@ -35,9 +35,9 @@ Bez těchto informací se selhání v logách nedá vyšetřit.
 
 Smyčka opakovaných GET dotazů na stav objednávky musí končit přesně **třemi způsoby**:
 
-1. **Očekávaný konečný stav (`COMPLETED`)** $\rightarrow$ Smyčka úspěšně končí, následuje aserce na správný výsledek.
-2. **Chybový konečný stav (`FAILED`)** $\rightarrow$ Smyčka se okamžitě zastaví. Čekat dál nemá smysl, test ihned selže (zčervená), protože objednávka se nezpracovala.
-3. **Vyčerpání limitu pokusů** $\rightarrow$ Stav je i po limitu stále průběžný (`PENDING` nebo `PROCESSING`). Smyčka končí a test selže s hláškou *„Nedokončeno v limitu“*.
+1. **Očekávaný konečný stav (`COMPLETED`)** → Smyčka úspěšně končí, následuje aserce na správný výsledek.
+2. **Chybový konečný stav (`FAILED`)** → Smyčka se okamžitě zastaví. Čekat dál nemá smysl, test ihned selže (zčervená), protože objednávka se nezpracovala.
+3. **Vyčerpání limitu pokusů** → Stav je i po limitu stále průběžný (`PENDING` nebo `PROCESSING`). Smyčka končí a test selže s hláškou *„Nedokončeno v limitu“*.
 
 *Poznámka: Pokud systém vrátí jakýkoliv **neznámý stav** (mimo specifikované čtyři), smyčka musí okamžitě skončit a test spadnout, aby se netočil donekonečna.*
 
