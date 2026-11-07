@@ -137,7 +137,8 @@ if (activeScenario === "Scenario_Empty") {
     });
 }
 ```
-```
+
+---
 
 ### Doložení sabotáže (Ověření, že test umí selhat)
 Aby bylo prokazatelné, že testy pouze pasivně neprocházejí, byl proveden test sabotáže:
