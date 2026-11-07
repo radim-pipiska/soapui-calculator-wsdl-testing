@@ -154,4 +154,4 @@ Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. T
 ---
 ## Stav
 
-Rozpracováno. Poslední ověřený zelený běh: 07. 11. 2026.
+Poslední ověřený zelený běh: 07. 11. 2026.
