@@ -6,7 +6,7 @@ Tento dokument obsahuje návrh chování mock serveru pro platební službu (end
 
 | Odpověď mocku | Co očekávám od objednávky | Zdroj |
 | :--- | :--- | :--- |
-| **200 OK** + `{"status":"PAID"}` | Objednávka přejde do stomu „Zaplaceno“ a spustí se expedice. | **Specifikace** (pro HTTP a JSON) / **Předpoklad** (pro chování objednávky) |
+| **200 OK** + `{"status":"PAID"}` | Objednávka přejde do stavu „Zaplaceno“ a spustí se expedice. | **Specifikace** (pro HTTP a JSON) / **Předpoklad** (pro chování objednávky) |
 | **402 Payment Required** + `{"status":"DECLINED"}` | Objednávka se nestornuje, uživateli se zobrazí chyba a možnost změnit kartu. | **Specifikace** (pro HTTP a JSON) / **Otázka na analytika** (pro workflow a textaci) |
 | **500 Internal Server Error** | Chyba se zaloguje, uživatel vidí obecné varování, stav objednávky se nemění. | **Předpoklad** (simulace mocku) / **Otázka na analytika** (chceme automatický retry?) |
 | **Timeout** (žádná odpověď) | Systém neprovádí storno, přepne do stavu „Ověřování“ a naplánuje asynchronní kontrolu. | **Předpoklad** (simulace mocku) / **Otázka na analytika** (jaký je proces ověření visících plateb?) |
@@ -30,7 +30,7 @@ Některé starší nebo sekundární zdroje třetích stran stále uvádějí hi
 
 ## Technická implementace v Postmanu
 
-Celá konfigurace mocku je navržena tak, aby byla plně přenositelná a izolovaná. Veškerá logika i stavové proměnné jsou uloženy přímo v **Collection Variables** (proměnných kolekce). Exportovaný JSON soubor kolekce je tak jediným zdrojem pravdy a nevyžaduje import žádného externího Environmentu.
+Celá充onfigurace mocku je navržena tak, aby byla plně přenositelná a izolovaná. Veškerá logika i stavové proměnné jsou uloženy přímo v **Collection Variables** (proměnných kolekce). Exportovaný JSON soubor kolekce je tak jediným zdrojem pravdy a nevyžaduje import žádného externího Environmentu.
 
 ### Inicializované proměnné v kolekci (Collection Variables)
 * `scenarios`: `["Scenario_PAID", "Scenario_DECLINED", "Scenario_500", "Scenario_Empty", "Scenario_Timeout"]`
@@ -176,8 +176,6 @@ if (activeScenario === "Scenario_Empty") {
 
 ---
 
----
-
 ## Jak spustit testy
 
 1. Stáhněte si JSON soubor s kompletní konfigurací z repozitáře: [postman/Payment_Service_Mock.postman_collection.json](../postman/Payment_Service_Mock.postman_collection.json).
@@ -185,4 +183,3 @@ if (activeScenario === "Scenario_Empty") {
 3. Nahrajte stažený `.json` soubor. Kolekce se automaticky vytvoří včetně všech skriptů, proměnných a testovacích příkladů.
 4. Klikněte pravým tlačítkem na importovanou kolekci a vytvořte nad ní **Mock Server** (případně využijte lokální mockovací endpoint).
 5. Spusťte požadavky ručně nebo hromadně pomocí nástroje **Collection Runner**. Výsledky asercí se zobrazí v záložce *Test Results*.
-
