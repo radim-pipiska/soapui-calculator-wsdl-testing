@@ -144,9 +144,9 @@ if (activeScenario === "Scenario_Empty") {
 ---
 
 ### Ověření úspěšného hromadného běhu (Collection Runner)
-Pro validaci kompletní série integračních scénářů byl požadavek spuštěn v nástroji **Collection Runner** s pevně nastaveným počtem **5 iterací**. Díky implementované pojistce v Pre-request skriptu (`pm.info.eventName === "runner"`) došlo při zahájení k automatickému resetu indexu na hodnotu `0`, čímž bylo zajištěno konzistentní pokrytí všech stavů. 
+Pro validaci kompletní série integračních scénářů byl požadavek spuštěn v nástroji **Collection Runner** s nastaveným počtem **5 iterací**. Při spuštění byl v proměnných kolekce přednastaven `sequential_index` na hodnotu `3`. První iterace z Runneru proto korektně odstartovala scénářem `Scenario_Empty` a celý cyklus postupně otestoval všech 5 definovaných stavů, přičemž pátá iterace byla zakončena scénářem `Scenario_500`.
 
-Všech 5 průchodů proběhlo plně autonomně bez chyb, aserce v záložce *Tests* dynamicky ověřily očekávané HTTP kódy i struktury JSON odpovědí, a pátý krok korektně nasimuloval síťové zpoždění (pomalou odpověď 10 s). Kompletní zelený výsledek exekuce je doložen na [screenshotu z výsledků Runneru](../screenshots/Payment_service_Mock_Run_results.png).
+Všech 5 průchodů proběhlo úspěšně a plně automatizovaně. Aserce v záložce *Tests* dynamicky ověřily očekávané HTTP kódy i struktury odpovědí pro každý konkrétní krok. Kompletní zelený výsledek exekuce a zachycení celé sekvence je doložen na [screenshotu z výsledků Runneru](../screenshots/Payment_service_Mock_Run_results.png).
 
 ---
 
