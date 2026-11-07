@@ -14,7 +14,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "// 1. Načteme pole scénářů z proměnných kolekce\r\nlet scenarios = JSON.parse(pm.collectionVariables.get(\"scenarios\"));\r\n\r\n// 2. Načteme izolovaný index pro sekvenční volání\r\nlet currentIndex = parseInt(pm.collectionVariables.get(\"sequential_index\"));\r\n\r\n// Pojistka pro případ prázdné hodnoty\r\nif (isNaN(currentIndex)) {\r\n    currentIndex = 0;\r\n}\r\n\r\n// 3. Vybereme scénář\r\nlet currentScenario = scenarios[currentIndex];\r\n\r\n// 4. Uložíme ho do proměnné pro hlavičku x-mock-response-name\r\npm.collectionVariables.set(\"next_scenario\", currentScenario);\r\nconsole.log(\"-> [SEQUENTIAL] Mock přepnut na scénář: \" + currentScenario);\r\n\r\n// 5. Vypočítáme další index v pořadí a uložíme ho zpět do sequential_index\r\nlet nextIndex = (currentIndex + 1) % scenarios.length;\r\npm.collectionVariables.set(\"sequential_index\", nextIndex);\r\n"
+              "// 1. Načteme pole scénářů z proměnných kolekce\r\nlet scenarios = JSON.parse(pm.collectionVariables.get(\"scenarios\"));\r\n\r\n// 2. Načteme izolovaný index pro sekvenční volání\r\nlet currentIndex = parseInt(pm.collectionVariables.get(\"sequential_index\"));\r\n\r\n// Pojistka pro případ prázdné hodnoty\r\nif (isNaN(currentIndex)) {\r\n    currentIndex = 0;\r\n}\r\n\r\n// 3. Vybereme scénář\r\nlet currentScenario = scenarios[currentIndex];\r\n\r\n// 4. Uložíme ho do proměnné pro hlavičku x-mock-response-name\r\npm.collectionVariables.set(\"next_scenario\", currentScenario);\r\n\r\n// ====================================================================\r\n// NOVÁ ČÁST: IMPLEMENTACE REÁLNÉHO TIMEOUTU PODLE BODU 1\r\n// ====================================================================\r\nif (currentScenario === \"Scenario_Timeout\") {\r\n    // Vynutíme, aby mock server s odpovědí čekal 10 sekund (10000 ms)\r\n    pm.request.headers.add({ key: \"x-mock-response-delay\", value: \"10000\" });\r\n    console.log(\"-> [SEQUENTIAL] Aktivována simulace timeoutu (delay 10s)\");\r\n} else {\r\n    // Pro všechny ostatní scénáře zajistíme okamžitou odpověď bez čekání\r\n    pm.request.headers.add({ key: \"x-mock-response-delay\", value: \"0\" });\r\n}\r\n// ====================================================================\r\n\r\nconsole.log(\"-> [SEQUENTIAL] Mock přepnut na scénář: \" + currentScenario);\r\n\r\n// 5. Vypočítáme další index v pořadí a uložíme ho zpět do sequential_index\r\nlet nextIndex = (currentIndex + 1) % scenarios.length;\r\npm.collectionVariables.set(\"sequential_index\", nextIndex);\r\n"
             ]
           }
         },
@@ -227,7 +227,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "// 1. Zjistíme aktivní scénář z proměnné kolekce\r\nlet activeScenario = pm.collectionVariables.get(\"next_scenario\");\r\n\r\n// 2. Definujeme očekávané HTTP status kódy\r\nlet expectedStatuses = {\r\n    \"Scenario_PAID\": 200,\r\n    \"Scenario_DECLINED\": 402,\r\n    \"Scenario_500\": 500,\r\n    \"Scenario_Empty\": 200,\r\n    \"Scenario_Timeout\": 200\r\n};\r\nlet expectedStatusCode = expectedStatuses[activeScenario];\r\n\r\n// --- TEST 1: Kontrola HTTP Status kódu ---\r\npm.test(`[${activeScenario}] - Status kód je ${expectedStatusCode}`, function () {\r\n    pm.response.to.have.status(expectedStatusCode);\r\n});\r\n\r\n// --- TEST 2: Kontrola obsahu a struktury těla (Body) ---\r\nif (activeScenario === \"Scenario_Empty\") {\r\n    \r\n    pm.test(`[${activeScenario}] - Tělo odpovědi je zcela prázdné`, function () {\r\n        // Ověříme, že délka textu odpovědi je 0\r\n        pm.expect(pm.response.text().length).to.equal(0);\r\n    });\r\n\r\n} else if (activeScenario === \"Scenario_500\") {\r\n\r\n    pm.test(`[${activeScenario}] - Obsahuje chybovou zprávu serveru`, function () {\r\n        let jsonData = pm.response.json();\r\n        pm.expect(jsonData).to.have.property(\"error\");\r\n        pm.expect(jsonData.error).to.equal(\"Internal Server Error\");\r\n    });\r\n\r\n} else if (activeScenario === \"Scenario_PAID\" || activeScenario === \"Scenario_DECLINED\") {\r\n\r\n    pm.test(`[${activeScenario}] - Obsahuje validní JSON status`, function () {\r\n        let jsonData = pm.response.json();\r\n        \r\n        // Ověříme strukturu (klíč \"status\")\r\n        pm.expect(jsonData).to.have.property(\"status\");\r\n        \r\n        // Ověříme konkrétní hodnotu (PAID nebo DECLINED)\r\n        let expectedValue = activeScenario.replace(\"Scenario_\", \"\"); // Odřízne \"Scenario_\" a nechá jen PAID/DECLINED\r\n        pm.expect(jsonData.status).to.equal(expectedValue);\r\n    });\r\n}\r\n"
+              "// 1. Načteme pole scénářů z proměnných kolekce\r\nlet scenarios = JSON.parse(pm.collectionVariables.get(\"scenarios\"));\r\n\r\n// 2. Načteme izolovaný index pro sekvenční volání\r\nlet currentIndex = parseInt(pm.collectionVariables.get(\"sequential_index\"));\r\n\r\n// Pojistka pro případ prázdné hodnoty\r\nif (isNaN(currentIndex)) {\r\n    currentIndex = 0;\r\n}\r\n\r\n// 3. Vybereme scénář\r\nlet currentScenario = scenarios[currentIndex];\r\n\r\n// 4. Uložíme ho do proměnné pro hlavičku x-mock-response-name\r\npm.collectionVariables.set(\"next_scenario\", currentScenario);\r\n\r\n// ====================================================================\r\n// NOVÁ ČÁST: IMPLEMENTACE REÁLNÉHO TIMEOUTU PODLE BODU 1\r\n// ====================================================================\r\nif (currentScenario === \"Scenario_Timeout\") {\r\n    // Vynutíme, aby mock server s odpovědí čekal 10 sekund (10000 ms)\r\n    pm.request.headers.add({ key: \"x-mock-response-delay\", value: \"10000\" });\r\n    console.log(\"-> [SEQUENTIAL] Aktivována simulace timeoutu (delay 10s)\");\r\n} else {\r\n    // Pro všechny ostatní scénáře zajistíme okamžitou odpověď bez čekání\r\n    pm.request.headers.add({ key: \"x-mock-response-delay\", value: \"0\" });\r\n}\r\n// ====================================================================\r\n\r\nconsole.log(\"-> [SEQUENTIAL] Mock přepnut na scénář: \" + currentScenario);\r\n\r\n// 5. Vypočítáme další index v pořadí a uložíme ho zpět do sequential_index\r\nlet nextIndex = (currentIndex + 1) % scenarios.length;\r\npm.collectionVariables.set(\"sequential_index\", nextIndex);\r\n"
             ]
           }
         }
@@ -251,186 +251,25 @@
           ]
         }
       },
-      "response": [
-        {
-          "name": "Scenario_PAID",
-          "originalRequest": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "x-mock-response-name",
-                "value": "{{next_scenario}}"
-              }
-            ],
-            "url": {
-              "raw": "https://{{mock_url}}/payments",
-              "protocol": "https",
-              "host": [
-                "{{mock_url}}"
-              ],
-              "path": [
-                "payments"
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": "json",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "cookie": [],
-          "body": "{\r\n  \"status\": \"PAID\"\r\n}\r\n"
-        },
-        {
-          "name": "Scenario_DECLINED",
-          "originalRequest": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "x-mock-response-name",
-                "value": "{{next_scenario}}"
-              }
-            ],
-            "url": {
-              "raw": "https://{{mock_url}}/payments",
-              "protocol": "https",
-              "host": [
-                "{{mock_url}}"
-              ],
-              "path": [
-                "payments"
-              ]
-            }
-          },
-          "status": "Payment Required",
-          "code": 402,
-          "_postman_previewlanguage": "json",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "cookie": [],
-          "body": "{\r\n  \"status\":\"DECLINED\"\r\n}"
-        },
-        {
-          "name": "Scenario_500",
-          "originalRequest": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "x-mock-response-name",
-                "value": "{{next_scenario}}"
-              }
-            ],
-            "url": {
-              "raw": "https://{{mock_url}}/payments",
-              "protocol": "https",
-              "host": [
-                "{{mock_url}}"
-              ],
-              "path": [
-                "payments"
-              ]
-            }
-          },
-          "status": "Internal Server Error",
-          "code": 500,
-          "_postman_previewlanguage": "json",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "cookie": [],
-          "body": "{\r\n  \"error\": \"Internal Server Error\"\r\n}"
-        },
-        {
-          "name": "Scenario_Empty",
-          "originalRequest": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "x-mock-response-name",
-                "value": "{{next_scenario}}"
-              }
-            ],
-            "url": {
-              "raw": "https://{{mock_url}}/payments",
-              "protocol": "https",
-              "host": [
-                "{{mock_url}}"
-              ],
-              "path": [
-                "payments"
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": "text",
-          "header": null,
-          "cookie": [],
-          "body": ""
-        },
-        {
-          "name": "Scenario_Timeout",
-          "originalRequest": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "x-mock-response-name",
-                "value": "{{next_scenario}}"
-              }
-            ],
-            "url": {
-              "raw": "https://{{mock_url}}/payments",
-              "protocol": "https",
-              "host": [
-                "{{mock_url}}"
-              ],
-              "path": [
-                "payments"
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": "json",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "cookie": [],
-          "body": "{\r\n  \"info\": \"Tato odpoved simuluje vyprseni casoveho limitu\"\r\n}"
-        }
-      ]
+      "response": []
     }
   ],
   "variable": [
     {
       "key": "scenarios",
-      "value": ""
+      "value": "[\"Scenario_PAID\", \"Scenario_DECLINED\", \"Scenario_500\", \"Scenario_Empty\", \"Scenario_Timeout\"]"
     },
     {
       "key": "mock_url",
-      "value": ""
+      "value": "a036a918-45b7-4b26-b1ba-4315c6261b8d.mock.pstmn.io"
     },
     {
       "key": "next_scenario",
-      "value": ""
+      "value": "Scenario_PAID"
     },
     {
       "key": "sequential_index",
-      "value": ""
+      "value": "0"
     }
   ]
 }
