@@ -111,7 +111,7 @@ pm.test(`[SMOKE TEST MOCKU] - ${activeScenario} vrací kód ${expectedStatusCode
 ### Doložení sabotáže (Ověření, že test umí selhat)
 Aby bylo prokazatelné, že testy pouze pasivně neprocházejí, byl proveden test sabotáže:
 1. U uloženého příkladu `Scenario_DECLINED` byl záměrně změněn návratový status kód v pravém horním rohu z `402 Payment Required` na `200 OK`.
-2. Při spuštění sekvenčního testu testovací aserce selhala a vygenerovala korektní červenou chybovou hlášku:
+2. Při spuštění sekvenčního testu testovací aserce selhala a vygenerovala korektní červenou [chybovou hlášku](../screenshots/Scenario_DECLINED_Sabotage.png):
    `AssertionError: expected response to have status code 402 but got 200`
 
 ---
