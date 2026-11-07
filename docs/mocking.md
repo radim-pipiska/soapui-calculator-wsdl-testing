@@ -152,9 +152,11 @@ Všech 5 průchodů proběhlo úspěšně a plně automatizovaně. Aserce v zál
 
 ### Doložení sabotáže (Ověření, že test umí selhat)
 Aby bylo prokazatelné, že testy pouze pasivně neprocházejí, byl proveden test sabotáže:
-1. U uloženého příkladu `Scenario_DECLINED` byl záměrně změněn návratový status kód v pravém horním rohu z `402 Payment Required` na `200 OK`.
-2. Při spuštění testu testovací aserce selhala a vygenerovala korektní červenou [chybovou hlášku](../screenshots/Scenario_DECLINED_Sabotage.png):
+1. U uloženého příkladu `Scenario_DECLINED` byl záměrně změněn návratový status kód v konfiguraci z `402 Payment Required` na `200 OK`.
+2. Při ručním spuštění požadavku s indexem `1` testovací aserce správně selhala a vygenerovala korektní červenou chybovou hlášku:
    `AssertionError: expected response to have status code 402 but got 200`
+
+Tímto experimentem bylo prakticky ověřeno, že implementované aserce jsou plně funkční a schopné okamžitě detekovat nečekanou změnu chování na straně mock serveru. Kompletní vizuální doložení červeného selhání včetně chybové zprávy se nachází na [screenshotu sabotáže](../screenshots/Scenario_DECLINED_Sabotage.png).
 
 ---
 
