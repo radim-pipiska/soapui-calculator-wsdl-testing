@@ -41,12 +41,28 @@ V tabulce proměnných kolekce nastavte:
 
 ### Pre-request Script pro `Zpracovat platbu (Sequential)`
 ```javascript
+// 1. Načteme pole scénářů z proměnných kolekce
 let scenarios = JSON.parse(pm.collectionVariables.get("scenarios"));
+
+// === KONTROLA PRO RUNNER (BOD 2) ===
+// Pokud spouštíme Runner a jsme v úplně první iteraci,
+// vynutíme reset sekvenčního indexu na 0, aby testy začaly vždy od PAID
+if (pm.info.iteration === 0) {
+    pm.collectionVariables.set("sequential_index", 0);
+}
+// ===================================
+
+// 2. Načteme izolovaný index pro sekvenční volání
 let currentIndex = parseInt(pm.collectionVariables.get("sequential_index"));
 
-if (isNaN(currentIndex)) { currentIndex = 0; }
+if (isNaN(currentIndex)) {
+    currentIndex = 0;
+}
 
+// 3. Vybereme scénář
 let currentScenario = scenarios[currentIndex];
+
+// 4. Uložíme ho do proměnné pro hlavičku x-mock-response-name a pro Test skript
 pm.collectionVariables.set("next_scenario", currentScenario);
 
 // Simulace reálného timeoutu (zpoždění na straně mock serveru)
@@ -62,6 +78,7 @@ if (currentScenario === "Scenario_Timeout") {
 pm.request.headers.add({ key: "x-mock-response-name", value: currentScenario });
 console.log("-> [SEQUENTIAL] Vybrána odpověď: " + currentScenario);
 
+// 5. Vypočítáme další index v pořadí a uložíme ho zpět do sequential_index
 let nextIndex = (currentIndex + 1) % scenarios.length;
 pm.collectionVariables.set("sequential_index", nextIndex);
 ```
