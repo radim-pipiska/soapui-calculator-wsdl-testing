@@ -107,7 +107,7 @@ console.log("-> [RANDOMIZED] Vybrána náhodná odpověď: " + currentScenario);
 
 Následující kód se vkládá do záložky **Tests** u obou exekutorských požadavků. Slouží výhradně jako **smoke test funkčnosti samotného mocku** (ověřuje, že Postman vybral správný příklad). Nedokáže ověřit chování externího objednávkového systému.
 
-**Smoke test skript:**
+**Smoke test skript/AI:**
 ```javascript
 let activeScenario = pm.collectionVariables.get("next_scenario");
 
