@@ -217,16 +217,16 @@
       "value": "[\"Scenario_PAID\", \"Scenario_DECLINED\", \"Scenario_500\", \"Scenario_Empty\", \"Scenario_Timeout\"]"
     },
     {
-      "key": "mock_url",
-      "value": "a036a918-45b7-4b26-b1ba-4315c6261b8d.mock.pstmn.io"
-    },
-    {
       "key": "next_scenario",
       "value": "Scenario_PAID"
     },
     {
       "key": "sequential_index",
       "value": "0"
+    },
+    {
+      "key": "mock_url",
+      "value": ""
     }
   ]
 }
