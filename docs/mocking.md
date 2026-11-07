@@ -176,10 +176,13 @@ if (activeScenario === "Scenario_Empty") {
 
 ---
 
+---
+
 ## Jak spustit testy
 
-1. Stáhněte si JSON soubor s kompletní konfigurací z repozitáře: [postman/Payment_Service_Mock.postman_collection.json](postman/Payment_Service_Mock.postman_collection.json).
+1. Stáhněte si JSON soubor s kompletní konfigurací z repozitáře: [postman/Payment_Service_Mock.postman_collection.json](../postman/Payment_Service_Mock.postman_collection.json).
 2. Otevřete aplikaci Postman a klikněte na tlačítko **Import** v levém horním rohu.
 3. Nahrajte stažený `.json` soubor. Kolekce se automaticky vytvoří včetně všech skriptů, proměnných a testovacích příkladů.
 4. Klikněte pravým tlačítkem na importovanou kolekci a vytvořte nad ní **Mock Server** (případně využijte lokální mockovací endpoint).
 5. Spusťte požadavky ručně nebo hromadně pomocí nástroje **Collection Runner**. Výsledky asercí se zobrazí v záložce *Test Results*.
+
