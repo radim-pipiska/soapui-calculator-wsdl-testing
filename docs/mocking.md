@@ -1,137 +1,99 @@
 # Integrační testování: Návrh odpovědí mocku platební služby
 
-Tento dokument obsahuje návrh chování mock serveru pro platební službu (endpoint `POST /payments`) a definici očekávaných reakcí objednávkového systému. Slouží jako podklad pro vývoj, testování a diskuzi s analytikem.
+Tento dokument obsahuje revidovaný návrh chování mock serveru pro fiktivní platební službu (endpoint `POST /payments`) a definici očekávaného chování objednávkového systému. Dokument slouží jako podklad pro diskuzi s analytikem a obsahuje technický návod k implementaci v nástroji Postman.
 
-## Souhrnná tabulka testovacích scénářů
+## Souhrnná tabulka testovacích scénářů (Návrh pro analytika)
 
-| Odpověď mocku | Co očekávám od objednávky | Zdroj |
+*Poznámka autora: Všechna očekávání od objednávkového systému jsou v této fázi považována za kvalifikované předpoklady a náměty k diskuzi. Ve fiktivní specifikaci se nenacházejí.*
+
+| Odpověď mocku | Co se očekává od objednávky (Návrh do diskuze) | Zdroj / Typ informace |
 | :--- | :--- | :--- |
-| **200 OK** + `{"status":"PAID"}` | Objednávka přejde do stavu „Zaplaceno“ a spustí se expedice. | **Specifikace** (pro HTTP a JSON) / **Předpoklad** (pro chování objednávky) |
-| **402 Payment Required** + `{"status":"DECLINED"}` | Objednávka se nestornuje, uživateli se zobrazí chyba a možnost změnit kartu. | **Specifikace** (pro HTTP a JSON) / **Otázka na analytika** (pro workflow a textaci) |
-| **500 Internal Server Error** | Chyba se zaloguje, uživatel vidí obecné varování, stav objednávky se nemění. | **Předpoklad** (simulace mocku) / **Otázka na analytika** (chceme automatický retry?) |
-| **Timeout** (žádná odpověď) | Systém neprovádí storno, přepne do stavu „Ověřování“ a naplánuje asynchronní kontrolu. | **Předpoklad** (simulace mocku) / **Otázka na analytika** (jaký je proces ověření visících plateb?) |
-| **200 OK** + prázdné tělo | Aplikace bezpečně ošetří selhání parsování, nezmění stav na zaplaceno a zaloguje error. | **Předpoklad** (simulace mocku) / **Otázka na analytika** (jak komunikovat nečekanou chybu klientovi?) |
-
----
-
-## Důležitá poznámka k infrastruktuře (Limity Postman Mock Serveru)
-
-* **Ověřeno dne:** 7. listopadu 2026
-* **Zdroj informací:** Oficiální dokumentace Postman ([Postman Docs - About plans](https://postman.com))
-
-Podle oficiálních podkladů k platformě Postman (od změn zavedených v březnu 2026) **již není využití mock serverů účtováno podle spotřeby a je zcela neomezené na všech plánech**, tedy včetně bezplatného (Free) plánu.
-
-> *"Mock Servers and Custom Domains will no longer be charged based on consumption. Mock server usage is now unlimited on all plans."*
-
-### Upozornění na neaktuální zdroje
-Některé starší nebo sekundární zdroje třetích stran stále uvádějí historický limit 1 000 volání měsíčně pro Free plán. Tyto údaje jsou neaktuální. Při konfiguraci testovacího prostředí má oficiální produktová dokumentace Postmanu jednoznačnou přednost. Vzhledem k tomu, že se licenční podmínky a ceny poskytovatelů mění, je platnost tohoto pravidla fixována k výše uvedenému datu ověření.
+| **200 OK** + `{"status":"PAID"}` | Systém by měl objednávku přepnout do stavu „Zaplaceno“ a spustit proces expedice. | **Specifikace** (pro HTTP/JSON) / **Předpoklad autora** (pro workflow) |
+| **402 Payment Required** + `{"status":"DECLINED"}` | Systém by měl objednávku ponechat v rozpracovaném stavu, uživateli zobrazit chybovou hlášku a nabídnout změnu karty. **[OTÁZKA NA ANALYTIKA: Chceme objednávku po X neúspěšných pokusech stornovat automaticky?]** | **Specifikace** (pro HTTP/JSON) / **Otázka na analytika** (pro workflow a textaci) |
+| **500 Internal Server Error** | Systém by měl chybu zalogovat do monitoringu, uživateli zobrazit obecné varování a zachovat stav objednávky. **[OTÁZKA NA ANALYTIKA: Budeme implementovat automatický retry mechanismus na pozadí?]** | **Předpoklad** (simulace chybového stavu) / **Otázka na analytika** |
+| **Skutečný Timeout** (Zpoždění brány) | Systém nesmí objednávku stornovat. Měl by ji interně označit jako „Ověřování“ a spustit asynchronní reconciliation proces. **[OTÁZKA NA ANALYTIKA: Existuje GET endpoint na ověření stavu visící platby?]** | **Předpoklad** (simulace sítě) / **Otázka na analytika** |
+| **200 OK** + prázdné tělo | Systém musí bezpečně ošetřit selhání parsování (nesmí spadnout), transakci neuznat a zalogovat kritickou chybu. **[OTÁZKA NA ANALYTIKA: Jak komunikovat nevalidní data brány koncovému klientovi?]** | **Předpoklad** (detekce nekonzistence) / **Otázka na analytika** |
 
 ---
 
 ## Technická implementace v Postmanu
 
-Celá充onfigurace mocku je navržena tak, aby byla plně přenositelná a izolovaná. Veškerá logika i stavové proměnné jsou uloženy přímo v **Collection Variables** (proměnných kolekce). Exportovaný JSON soubor kolekce je tak jediným zdrojem pravdy a nevyžaduje import žádného externího Environmentu.
+Celá konfigurace mocku je navržena tak, aby byla plně přenositelná v rámci jednoho JSON souboru kolekce. Veškerá stavová logika je uložena v proměnných kolekce (**Collection Variables**).
 
-### Inicializované proměnné v kolekci (Collection Variables)
-* `scenarios`: `["Scenario_PAID", "Scenario_DECLINED", "Scenario_500", "Scenario_Empty", "Scenario_Timeout"]`
-* `sequential_index`: `0`
+### Architektura kolekce
+Aby se zamezilo nechtěnému chování a duplicitám při párování příkladů, je kolekce rozdělena na definici dat a samotné exekutorské požadavky:
 
-### 1. Režim: Zpracovat platbu (Sequential)
-Tento požadavek slouží k deterministickému testování. Využívá záložku **Pre-request Script** k postupnému procházení polí scénářů stále dokola.
+1. **`[Definice brány] POST /payments`** – Tento požadavek slouží pouze jako úložiště pro mock server. Obsahuje přesně 5 unikátních příkladů (Examples): `Scenario_PAID`, `Scenario_DECLINED`, `Scenario_500`, `Scenario_Empty` a `Scenario_Timeout`.
+2. **`Zpracovat platbu (Sequential)`** – Testovací požadavek pro deterministické testování. Postupně střídá stavy od indexu 0.
+3. **`Zpracovat platbu (Randomized)`** – Testovací požadavek pro průzkumné testování robustnosti. *Upozornění: Tento režim je nevhodný pro regresní testování, protože odlišný běh generuje různé pokrytí kódu.*
 
-**Pre-request Script:**
+### Správa proměnných (Důležité pro import)
+Aby byla kolekce funkční ihned po importu, hodnoty musí být striktně zapsány v polích **Initial Value**. Pokud by byly vyplněny pouze v *Current Value*, exportovaný JSON bude prázdný a Pre-request skript selže v Runneru s chybou `SyntaxError` (nikoliv chybou testu Failed), protože metoda `JSON.parse()` nedokáže zpracovat prázdný řetězec.
+
+V tabulce proměnných kolekce nastavte:
+* `scenarios` (Initial Value): `["Scenario_PAID", "Scenario_DECLINED", "Scenario_500", "Scenario_Empty", "Scenario_Timeout"]`
+* `sequential_index` (Initial Value): `0`
+* `mock_url` (Initial Value): *Čistá doména vašeho mocku bez protokolu `https://` (např. `vaše-id.mock.pstmn.io`). Protokol je pevně předřazen v samotném URL požadavku.*
+
+---
+
+## Skripty a simulace negativních stavů
+
+### Pre-request Script pro `Zpracovat platbu (Sequential)`
 ```javascript
-// 1. Načteme pole scénářů z proměnných kolekce
 let scenarios = JSON.parse(pm.collectionVariables.get("scenarios"));
-
-// 2. Načteme izolovaný index pro sekvenční volání
 let currentIndex = parseInt(pm.collectionVariables.get("sequential_index"));
 
-if (isNaN(currentIndex)) {
-    currentIndex = 0;
+if (isNaN(currentIndex)) { currentIndex = 0; }
+
+let currentScenario = scenarios[currentIndex];
+pm.collectionVariables.set("next_scenario", currentScenario);
+
+// Simulace reálného timeoutu (zpoždění na straně mock serveru)
+if (currentScenario === "Scenario_Timeout") {
+    // Využití oficiální hlavičky Postman mocku pro umělé zpoždění odpovědi v ms
+    pm.request.headers.add({ key: "x-mock-response-delay", value: "10000" });
+    console.log("-> [SEQUENTIAL] Aktivována simulace timeoutu (delay 10s)");
+} else {
+    // Pro ostatní scénáře vynutíme okamžitou odpověď (0ms)
+    pm.request.headers.add({ key: "x-mock-response-delay", value: "0" });
 }
 
-// 3. Vybereme scénář
-let currentScenario = scenarios[currentIndex];
+pm.request.headers.add({ key: "x-mock-response-name", value: currentScenario });
+console.log("-> [SEQUENTIAL] Vybrána odpověď: " + currentScenario);
 
-// 4. Uložíme ho do proměnné pro hlavičku x-mock-response-name
-pm.collectionVariables.set("next_scenario", currentScenario);
-console.log("-> [SEQUENTIAL] Mock přepnut na scénář: " + currentScenario);
-
-// 5. Vypočítáme další index v pořadí a uložíme ho zpět do sequential_index
 let nextIndex = (currentIndex + 1) % scenarios.length;
 pm.collectionVariables.set("sequential_index", nextIndex);
 ```
 
-### 2. Režim: Zpracovat platbu (Randomized)
-Tento požadavek simuluje nestabilitu reálného prostředí a náhodné výpadky. Neovlivňuje čítač sekvenčního režimu.
-
-**Pre-request Script:**
+### Pre-request Script pro `Zpracovat platbu (Randomized)`
 ```javascript
-// 1. Načteme pole scénářů z proměnných kolekce
 let scenarios = JSON.parse(pm.collectionVariables.get("scenarios"));
-
-// 2. Vygenerujeme náhodný index (0 až 4)
 let randomIndex = Math.floor(Math.random() * scenarios.length);
-
-// 3. Vybereme náhodný scénář
 let currentScenario = scenarios[randomIndex];
 
-// 4. Uložíme ho do proměnné pro hlavičku x-mock-response-name
 pm.collectionVariables.set("next_scenario", currentScenario);
-console.log("-> [RANDOMIZED] Mock přepnut na scénář: " + currentScenario);
+
+if (currentScenario === "Scenario_Timeout") {
+    pm.request.headers.add({ key: "x-mock-response-delay", value: "10000" });
+} else {
+    pm.request.headers.add({ key: "x-mock-response-delay", value: "0" });
+}
+
+pm.request.headers.add({ key: "x-mock-response-name", value: currentScenario });
+console.log("-> [RANDOMIZED] Vybrána náhodná odpověď: " + currentScenario);
 ```
 
 ---
 
-## Definice datových struktur mock odpovědí (Examples)
+## Ověření a doložení chybového stavu (Smoke test mocku)
 
-Každému scénáři odpovídá v Postmanu jeden uložený **Example** s unikátním názvem. Vyhledávání je řízeno hlavičkou požadavku `x-mock-response-name: {{next_scenario}}`.
+Následující kód se vkládá do záložky **Tests** u obou exekutorských požadavků. Slouží výhradně jako **smoke test funkčnosti samotného mocku** (ověřuje, že Postman vybral správný příklad). Nedokáže ověřit chování externího objednávkového systému.
 
-### Scenario_PAID (Status: `200 OK`)
-```json
-{
-    "status": "PAID"
-}
-```
-
-### Scenario_DECLINED (Status: `402 Payment Required`)
-```json
-{
-    "status": "DECLINED"
-}
-```
-
-### Scenario_500 (Status: `500 Internal Server Error`)
-```json
-{
-    "error": "Internal Server Error"
-}
-```
-
-### Scenario_Empty (Status: `200 OK`)
-*Tělo odpovědi je prázdné (0 bajtů).*
-
-### Scenario_Timeout (Status: `200 OK`)
-*Simulační zpráva. V reálném testování je timeout vyvolán nastavením nízké hodnoty pro timeout na straně volajícího klienta.*
-```json
-{
-    "info": "Tato odpoved simuluje vyprseni casoveho limitu"
-}
-```
-
----
-
-## Automatizovaná validace odpovědí (Záložka Tests)
-
-Oba požadavky sdílejí tento identický testovací skript. Ten se dynamicky adaptuje na základě toho, jaký scénář byl v daném kroku zrovna vybrán, a ověří jak HTTP status kód, tak integritu dat v těle odpovědi.
-
-**Test Script:**
+**Smoke test skript:**
 ```javascript
-// 1. Zjistíme aktivní scénář z proměnné kolekce
 let activeScenario = pm.collectionVariables.get("next_scenario");
 
-// 2. Definujeme očekávané HTTP status kódy
 let expectedStatuses = {
     "Scenario_PAID": 200,
     "Scenario_DECLINED": 402,
@@ -141,45 +103,33 @@ let expectedStatuses = {
 };
 let expectedStatusCode = expectedStatuses[activeScenario];
 
-// --- TEST 1: Kontrola HTTP Status kódu ---
-pm.test(`[${activeScenario}] - Status kód je ${expectedStatusCode}`, function () {
+pm.test(`[SMOKE TEST MOCKU] - ${activeScenario} vrací kód ${expectedStatusCode}`, function () {
     pm.response.to.have.status(expectedStatusCode);
 });
-
-// --- TEST 2: Kontrola obsahu a struktury těla (Body) ---
-if (activeScenario === "Scenario_Empty") {
-    
-    pm.test(`[${activeScenario}] - Tělo odpovědi je zcela prázdné`, function () {
-        pm.expect(pm.response.text().length).to.equal(0);
-    });
-
-} else if (activeScenario === "Scenario_500") {
-
-    pm.test(`[${activeScenario}] - Obsahuje chybovou zprávu serveru`, function () {
-        let jsonData = pm.response.json();
-        pm.expect(jsonData).to.have.property("error");
-        pm.expect(jsonData.error).to.equal("Internal Server Error");
-    });
-
-} else if (activeScenario === "Scenario_PAID" || activeScenario === "Scenario_DECLINED") {
-
-    pm.test(`[${activeScenario}] - Obsahuje validní JSON status`, function () {
-        let jsonData = pm.response.json();
-        
-        pm.expect(jsonData).to.have.property("status");
-        
-        let expectedValue = activeScenario.replace("Scenario_", ""); 
-        pm.expect(jsonData.status).to.equal(expectedValue);
-    });
-}
 ```
+
+### Doložení sabotáže (Ověření, že test umí selhat)
+Aby bylo prokazatelné, že testy pouze pasivně neprocházejí, byl proveden test sabotáže:
+1. U uloženého příkladu `Scenario_DECLINED` byl záměrně změněn návratový status kód v pravém horním rohu z `402 Payment Required` na `200 OK`.
+2. Při spuštění sekvenčního testu testovací aserce selhala a vygenerovala korektní červenou chybovou hlášku:
+   `AssertionError: expected response to have status code 402 but got 200`
 
 ---
 
+## Bezpečnost a metadata při exportu
+Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. Toto ID reprezentuje pouze interní číslo účtu workspace v cloudu Postmanu. Bylo vědomě rozhodnuto toto ID v souboru ponechat, protože neobsahuje žádné tajné klíče, hesla ani osobní údaje a je bezpečné pro uložení do veřejného repozitáře na GitHubu.
+
+---
+
+## Odkazy a zdroje
+* Pravidla pro neomezené využití mocků: [Postman Docs - About plans](https://postman.com) (Ověřeno k 7. listopadu 2026).
+* Konfigurace zpoždění odpovědi mock serveru přes hlavičky: [Postman Learning Hub - Mock with API (x-mock-response-delay)](https://postman.com)
+
+---
 ## Jak spustit testy
 
 1. Stáhněte si JSON soubor s kompletní konfigurací z repozitáře: [postman/Payment_Service_Mock.postman_collection.json](../postman/Payment_Service_Mock.postman_collection.json).
 2. Otevřete aplikaci Postman a klikněte na tlačítko **Import** v levém horním rohu.
 3. Nahrajte stažený `.json` soubor. Kolekce se automaticky vytvoří včetně všech skriptů, proměnných a testovacích příkladů.
-4. Klikněte pravým tlačítkem na importovanou kolekci a vytvořte nad ní **Mock Server** (případně využijte lokální mockovací endpoint).
-5. Spusťte požadavky ručně nebo hromadně pomocí nástroje **Collection Runner**. Výsledky asercí se zobrazí v záložce *Test Results*.
+4. Otevřete záložku **Variables** u kolekce a do sloupce **Initial Value** u proměnné `mock_url` vložte vygenerovanou adresu vašeho mock serveru (např. `a036a918-45b7-4b26-b1ba-4315c6261b8d.mock.pstmn.io` - bez protokolu `https://`).
+5. Požadavky spouštějte v záložce kolekce.
