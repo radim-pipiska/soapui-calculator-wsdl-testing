@@ -21,10 +21,10 @@ Tento dokument obsahuje revidovaný návrh chování mock serveru pro fiktivní 
 Celá konfigurace mocku je navržena tak, aby byla plně přenositelná v rámci jednoho JSON souboru kolekce. Veškerá stavová logika je uložena v proměnných kolekce (**Collection Variables**).
 
 ### Architektura kolekce
-Aby se zamezilo nechtěnému chování a duplicitám při párování příkladů, je kolekce rozdělena na definici dat a samotné exekutorské požadavky:
+Kolekce byla maximálně zjednodušena a obsahuje pouze jeden jediný požadavek. Původně zamýšlený náhodný režim byl z architektury zcela odstraněn, protože nepředvídatelný běh generoval při každém spuštění jiné pokrytí kódu, což je pro regresní testování nevhodné.
 
-1. **`[Definice brány] POST /payments`** – Tento požadavek slouží pouze jako úložiště pro mock server. Obsahuje přesně 5 unikátních příkladů (Examples): `Scenario_PAID`, `Scenario_DECLINED`, `Scenario_500`, `Scenario_Empty` a `Scenario_Timeout`.
-2. **`Zpracovat platbu`** – Testovací požadavek pro deterministické testování. Postupně střídá stavy od indexu 0.
+Definice dat mocku i samotný volající exekutor jsou sloučeny do jednoho prvku:
+* **`Zpracovat platbu`** – Testovací požadavek s integrovanou sekvenční rotací indexů. Přímo pod ním je uloženo 5 unikátních příkladů (Examples): `Scenario_PAID`, `Scenario_DECLINED`, `Scenario_500`, `Scenario_Empty` a `Scenario_Timeout`.
 
 ### Správa proměnných (Důležité pro import)
 Aby byla kolekce funkční ihned po importu, hodnoty musí být striktně zapsány v polích **Initial Value**. Pokud by byly vyplněny pouze v *Current Value*, exportovaný JSON bude prázdný a Pre-request skript selže v Runneru s chybou `SyntaxError` (nikoliv chybou testu Failed), protože metoda `JSON.parse()` nedokáže zpracovat prázdný řetězec.
