@@ -37,7 +37,7 @@ V tabulce proměnných kolekce nastavte:
 
 ---
 
-## Skripty a simulace negativních stavů
+## Skripty a simulace negativních stavů /AI
 
 ### Pre-request Script pro `Zpracovat platbu (Sequential)`
 ```javascript
