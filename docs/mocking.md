@@ -32,7 +32,10 @@ Aby byla kolekce funkční ihned po importu, hodnoty musí být striktně zapsá
 V tabulce proměnných kolekce nastavte:
 * `scenarios` (Initial Value): `["Scenario_PAID", "Scenario_DECLINED", "Scenario_500", "Scenario_Empty", "Scenario_Timeout"]`
 * `sequential_index` (Initial Value): `0`
-* `mock_url` (Initial Value): *Čistá doména vašeho mocku bez protokolu `https://` (např. `vaše-id.mock.pstmn.io`). Protokol je pevně předřazen v samotném URL požadavku.*
+* `mock_url` (Initial Value): *Zde hodnotitel ponechá pole prázdné. Adresa se vygeneruje automaticky po vytvoření vlastního Mock Serveru nad naimportovanou kolekcí.*
+
+### Bezpečnost a ochrana firemního účtu
+V kolekci ani v dokumentaci záměrně není poskytnuta konkrétní živá URL adresa mock serveru. Vzhledem k tomu, že testování probíhá pod firemním účtem, sdílení aktivního koncového bodu by porušovalo bezpečnostní politiku. Projekt je navržen jako plně přenositelný (Portable) – hodnotitel si po importu vygeneruje vlastní mock endpoint, čímž je zaručena stoprocentní izolace a bezpečnost.
 
 ---
 
@@ -163,8 +166,8 @@ Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. T
 
 1. Stáhněte si JSON soubor s kompletní konfigurací z repozitáře: [postman/Payment_Service_Mock.postman_collection.json](../postman/Payment_Service_Mock.postman_collection.json).
 2. Otevřete aplikaci Postman a klikněte na tlačítko **Import** v levém horním rohu.
-3. Nahrajte stažený `.json` soubor. Kolekce se automaticky vytvoří včetně všech skriptů, proměnných a testovacích příkladů.
-4. Otevřete záložku **Variables** u kolekce a do sloupce **Initial Value** u proměnné `mock_url` vložte vygenerovanou adresu vašeho mock serveru (např. `a036a918-45b7-4b26-b1ba-4315c6261b8d.mock.pstmn.io` - bez protokolu `https://`).
+3. Vytvořte nad naimportovanou kolekcí vlastní Mock Server: Klikněte na tři tečky `...` u názvu kolekce, zvolte **Mock collection**, zadejte libovolný název a klikněte na **Create Mock Server**. Následně si zkopírujte vygenerovanou URL adresu.
+4. Otevřete záložku **Variables** u kolekce a do sloupce **Initial Value** (Shared Value) u proměnné `mock_url` vložte vaši nově vygenerovanou adresu mock serveru – striktně jako čistou doménu bez protokolu `https://` na začátku (např. `vsechno-smazat-123.mock.pstmn.io`).
 5. Požadavky spouštějte v záložce kolekce.
 
 ---
