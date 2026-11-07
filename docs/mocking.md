@@ -156,7 +156,7 @@ Aby bylo prokazatelné, že testy pouze pasivně neprocházejí, byl proveden te
 2. Při ručním spuštění požadavku s indexem `1` testovací aserce správně selhala a vygenerovala korektní červenou chybovou hlášku:
    `AssertionError: expected response to have status code 402 but got 200`
 
-Tímto experimentem bylo prakticky ověřeno, že implementované aserce jsou plně funkční a schopné okamžitě detekovat nečekanou změnu chování na straně mock serveru. Kompletní vizuální doložení červeného selhání včetně chybové zprávy se nachází na [screenshotu sabotáže](../screenshots/Scenario_DECLINED_Sabotage.png).
+Tímto experimentem bylo prakticky ověřeno, že implementované aserce jsou plně funkční a schopné okamžitě detekovat nečekanou změnu chování na straně mock serveru. Kompletní vizuální doložení červeného selhání včetně chybové zprávy se nachází na [screenshotu sabotáže](../screenshots/Payment_service_Scenario_DECLINED_Sabotage.png).
 
 ---
 
