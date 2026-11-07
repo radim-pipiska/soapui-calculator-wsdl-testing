@@ -122,9 +122,9 @@ Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. T
 ---
 
 ## Odkazy a zdroje
-* Pravidla pro neomezené využití mocků: [Postman Docs - About plans]([https://postman.com](https://learning.postman.com/latest-v-12/docs/billing/about-plans.md)) (Ověřeno k 7. listopadu 2026).
-* Konfigurace zpoždění odpovědi mock serveru přes hlavičky: [Postman Learning Hub - Mock with API (x-mock-response-delay)]([https://postman.com](https://learning.postman.com/docs/design-apis/mock-apis/tutorials/mock-with-api))
-* Jak server Postman mock odpovídá požadavkům na uložené příklady: [Postman Learning Hub - Mock with API (x-mock-response-delay)]([https://postman.com]([https://learning.postman.com/docs/design-apis/mock-apis/tutorials/mock-with-api](https://learning.postman.com/docs/design-apis/mock-apis/mock-servers/matching-algorithm/))
+* Pravidla pro neomezené využití mocků: [Postman Docs - About plans]([https://postman.com](https://learning.postman.com/latest-v-12/docs/billing/about-plans.md) (Ověřeno k 7. listopadu 2026).
+* Konfigurace zpoždění odpovědi mock serveru přes hlavičky: [Postman Learning Hub - Mock with API (x-mock-response-delay)]([https://postman.com](https://learning.postman.com/docs/design-apis/mock-apis/tutorials/mock-with-api)
+* Jak server Postman mock odpovídá požadavkům na uložené příklady: [Postman Learning Hub - Mock with API (x-mock-response-delay)]([https://postman.com]([https://learning.postman.com/docs/design-apis/mock-apis/tutorials/mock-with-api](https://learning.postman.com/docs/design-apis/mock-apis/mock-servers/matching-algorithm/)
 
 ---
 ## Jak spustit testy
