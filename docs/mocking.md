@@ -171,10 +171,6 @@ Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. T
 5. Požadavky spouštějte v záložce kolekce.
 
 ---
-### Vědomé rozhodnutí o veřejném koncovém bodu (Mock URL)
-V kolekci a dokumentaci je záměrně ponechána reálná adresa cvičného mock serveru (`a036a918-45b7-4b26-b1ba-4315c6261b8d.mock.pstmn.io`). Jako autor testu deklaruji, že se jedná o vědomé bezpečnostní rozhodnutí. Tento koncový bod neslouží k přenosu citlivých produkčních dat, osobních údajů ani tajných klíčů. Použití živé adresy usnadňuje okamžitou přenositelnost projektu pro review bez nutnosti okamžité lokální konfigurace ze strany hodnotitele.
-
----
 ## Stav
 
 Poslední ověřený zelený běh: 07. 11. 2026.
