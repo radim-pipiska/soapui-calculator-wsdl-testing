@@ -89,8 +89,10 @@ Následující kód se vkládá do záložky **Tests** u obou exekutorských po�
 
 **Smoke test skript/AI:**
 ```javascript
+// 1. Zjistíme aktivní scénář z proměnné kolekce
 let activeScenario = pm.collectionVariables.get("next_scenario");
 
+// 2. Definujeme očekávané HTTP status kódy
 let expectedStatuses = {
     "Scenario_PAID": 200,
     "Scenario_DECLINED": 402,
@@ -100,15 +102,47 @@ let expectedStatuses = {
 };
 let expectedStatusCode = expectedStatuses[activeScenario];
 
-pm.test(`[SMOKE TEST MOCKU] - ${activeScenario} vrací kód ${expectedStatusCode}`, function () {
+// --- TEST 1: Kontrola HTTP Status kódu ---
+pm.test(`[${activeScenario}] - Status kód je ${expectedStatusCode}`, function () {
     pm.response.to.have.status(expectedStatusCode);
 });
+
+// --- TEST 2: Kontrola obsahu a struktury těla (Body) ---
+if (activeScenario === "Scenario_Empty") {
+    
+    pm.test(`[${activeScenario}] - Tělo odpovědi je zcela prázdné`, function () {
+        // Ověříme, že délka textu odpovědi je 0
+        pm.expect(pm.response.text().length).to.equal(0);
+    });
+
+} else if (activeScenario === "Scenario_500") {
+
+    pm.test(`[${activeScenario}] - Obsahuje chybovou zprávu serveru`, function () {
+        let jsonData = pm.response.json();
+        pm.expect(jsonData).to.have.property("error");
+        pm.expect(jsonData.error).to.equal("Internal Server Error");
+    });
+
+} else if (activeScenario === "Scenario_PAID" || activeScenario === "Scenario_DECLINED") {
+
+    pm.test(`[${activeScenario}] - Obsahuje validní JSON status`, function () {
+        let jsonData = pm.response.json();
+        
+        // Ověříme strukturu (klíč "status")
+        pm.expect(jsonData).to.have.property("status");
+        
+        // Ověříme konkrétní hodnotu (PAID nebo DECLINED)
+        let expectedValue = activeScenario.replace("Scenario_", ""); // Odřízne "Scenario_" a nechá jen PAID/DECLINED
+        pm.expect(jsonData.status).to.equal(expectedValue);
+    });
+}
+```
 ```
 
 ### Doložení sabotáže (Ověření, že test umí selhat)
 Aby bylo prokazatelné, že testy pouze pasivně neprocházejí, byl proveden test sabotáže:
 1. U uloženého příkladu `Scenario_DECLINED` byl záměrně změněn návratový status kód v pravém horním rohu z `402 Payment Required` na `200 OK`.
-2. Při spuštění sekvenčního testu testovací aserce selhala a vygenerovala korektní červenou [chybovou hlášku](../screenshots/Scenario_DECLINED_Sabotage.png):
+2. Při spuštění testu testovací aserce selhala a vygenerovala korektní červenou [chybovou hlášku](../screenshots/Scenario_DECLINED_Sabotage.png):
    `AssertionError: expected response to have status code 402 but got 200`
 
 ---
