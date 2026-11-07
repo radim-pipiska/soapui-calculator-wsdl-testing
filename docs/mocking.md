@@ -24,8 +24,7 @@ Celá konfigurace mocku je navržena tak, aby byla plně přenositelná v rámci
 Aby se zamezilo nechtěnému chování a duplicitám při párování příkladů, je kolekce rozdělena na definici dat a samotné exekutorské požadavky:
 
 1. **`[Definice brány] POST /payments`** – Tento požadavek slouží pouze jako úložiště pro mock server. Obsahuje přesně 5 unikátních příkladů (Examples): `Scenario_PAID`, `Scenario_DECLINED`, `Scenario_500`, `Scenario_Empty` a `Scenario_Timeout`.
-2. **`Zpracovat platbu (Sequential)`** – Testovací požadavek pro deterministické testování. Postupně střídá stavy od indexu 0.
-3. **`Zpracovat platbu (Randomized)`** – Testovací požadavek pro průzkumné testování robustnosti. *Upozornění: Tento režim je nevhodný pro regresní testování, protože odlišný běh generuje různé pokrytí kódu.*
+2. **`Zpracovat platbu`** – Testovací požadavek pro deterministické testování. Postupně střídá stavy od indexu 0.
 
 ### Správa proměnných (Důležité pro import)
 Aby byla kolekce funkční ihned po importu, hodnoty musí být striktně zapsány v polích **Initial Value**. Pokud by byly vyplněny pouze v *Current Value*, exportovaný JSON bude prázdný a Pre-request skript selže v Runneru s chybou `SyntaxError` (nikoliv chybou testu Failed), protože metoda `JSON.parse()` nedokáže zpracovat prázdný řetězec.
@@ -39,15 +38,15 @@ V tabulce proměnných kolekce nastavte:
 
 ## Skripty a simulace negativních stavů /AI
 
-### Pre-request Script pro `Zpracovat platbu (Sequential)`
+### Pre-request Script pro `Zpracovat platbu`
 ```javascript
 // 1. Načteme pole scénářů z proměnných kolekce
 let scenarios = JSON.parse(pm.collectionVariables.get("scenarios"));
 
-// === KONTROLA PRO RUNNER ===
-// Pokud spouštíme Runner a jsme v úplně první iteraci,
-// vynutíme reset sekvenčního indexu na 0, aby testy začaly vždy od PAID
-if (pm.info.iteration === 0) {
+// === OPRAVENÁ KONTROLA PRO RUNNER ===
+// Index zresetujeme na 0 pouze tehdy, pokud test běží uvnitř automatizovaného Runneru 
+// A ZÁROVEŇ jsme v úplně první iteraci. Při ručním klikání (Send) se tato podmínka ignoruje.
+if (pm.info.eventName === "runner" && pm.info.iteration === 0) {
     pm.collectionVariables.set("sequential_index", 0);
 }
 // ===================================
@@ -80,24 +79,6 @@ console.log("-> [SEQUENTIAL] Vybrána odpověď: " + currentScenario);
 // 5. Vypočítáme další index v pořadí a uložíme ho zpět do sequential_index
 let nextIndex = (currentIndex + 1) % scenarios.length;
 pm.collectionVariables.set("sequential_index", nextIndex);
-```
-
-### Pre-request Script pro `Zpracovat platbu (Randomized)`
-```javascript
-let scenarios = JSON.parse(pm.collectionVariables.get("scenarios"));
-let randomIndex = Math.floor(Math.random() * scenarios.length);
-let currentScenario = scenarios[randomIndex];
-
-pm.collectionVariables.set("next_scenario", currentScenario);
-
-if (currentScenario === "Scenario_Timeout") {
-    pm.request.headers.add({ key: "x-mock-response-delay", value: "10000" });
-} else {
-    pm.request.headers.add({ key: "x-mock-response-delay", value: "0" });
-}
-
-pm.request.headers.add({ key: "x-mock-response-name", value: currentScenario });
-console.log("-> [RANDOMIZED] Vybrána náhodná odpověď: " + currentScenario);
 ```
 
 ---
@@ -150,6 +131,10 @@ Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. T
 3. Nahrajte stažený `.json` soubor. Kolekce se automaticky vytvoří včetně všech skriptů, proměnných a testovacích příkladů.
 4. Otevřete záložku **Variables** u kolekce a do sloupce **Initial Value** u proměnné `mock_url` vložte vygenerovanou adresu vašeho mock serveru (např. `a036a918-45b7-4b26-b1ba-4315c6261b8d.mock.pstmn.io` - bez protokolu `https://`).
 5. Požadavky spouštějte v záložce kolekce.
+
+---
+### Vědomé rozhodnutí o veřejném koncovém bodu (Mock URL)
+V kolekci a dokumentaci je záměrně ponechána reálná adresa cvičného mock serveru (`a036a918-45b7-4b26-b1ba-4315c6261b8d.mock.pstmn.io`). Jako autor testu deklaruji, že se jedná o vědomé bezpečnostní rozhodnutí. Tento koncový bod neslouží k přenosu citlivých produkčních dat, osobních údajů ani tajných klíčů. Použití živé adresy usnadňuje okamžitou přenositelnost projektu pro review bez nutnosti okamžité lokální konfigurace ze strany hodnotitele.
 
 ---
 ## Stav
