@@ -150,3 +150,8 @@ Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. T
 3. Nahrajte stažený `.json` soubor. Kolekce se automaticky vytvoří včetně všech skriptů, proměnných a testovacích příkladů.
 4. Otevřete záložku **Variables** u kolekce a do sloupce **Initial Value** u proměnné `mock_url` vložte vygenerovanou adresu vašeho mock serveru (např. `a036a918-45b7-4b26-b1ba-4315c6261b8d.mock.pstmn.io` - bez protokolu `https://`).
 5. Požadavky spouštějte v záložce kolekce.
+
+---
+## Stav
+
+Rozpracováno. Poslední ověřený zelený běh: 07. 11. 2026.
