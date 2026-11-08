@@ -116,6 +116,16 @@ pm.test(`[${activeScenario}] - Status kód je ${expectedStatusCode}`, function (
     pm.response.to.have.status(expectedStatusCode);
 });
 
+// --- KONTROLA DOBY ODEZVY (SABOTÁŽ PRO SCENARIO_TIMEOUT) ---
+if (activeScenario === "Scenario_Timeout") {
+    // !!! SABOTÁŽ TESTU !!! Nastaveno na 100ms, aby test při 10s delayi garantovaně selhal.
+    let maxAllowedResponseTime = 100; 
+    
+    pm.test(`[${activeScenario}] - Kontrola timeoutu (Odezva do ${maxAllowedResponseTime}ms)`, function () {
+        pm.expect(pm.response.responseTime).to.be.below(maxAllowedResponseTime);
+    });
+}
+
 // --- TEST 2: Kontrola obsahu a struktury těla (Body) ---
 if (activeScenario === "Scenario_Empty") {
     
