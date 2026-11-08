@@ -162,7 +162,7 @@ if (activeScenario === "Scenario_Empty") {
 ---
 
 ### Ověření hromadného běhu (Collection Runner)
-Požadavek byl spuštěn v nástroji **Collection Runner** s počtem **5 iterací**. Před spuštěním byl `sequential_index` nastaven na `3`. První iterace proto začala scénářem `Scenario_Empty`, následovaly `Scenario_Timeout`, `Scenario_PAID`, `Scenario_DECLINED` a pátá `Scenario_500`. Všech 5 průchodů proběhlo úspěšně a aserce ověřily očekávané HTTP kódy i struktury odpovědí. Výsledek je doložen na [screenshotu z výsledků Runneru](../screenshots/Payment_service_Mock_Run_results.png).
+Požadavek byl spuštěn v nástroji **Collection Runner** s počtem **5 iterací**. Před spuštěním byl `sequential_index` nastaven na `3`. První iterace proto začala scénářem `Scenario_Empty`, následovaly `Scenario_Timeout`, `Scenario_PAID`, `Scenario_DECLINED` a pátá `Scenario_500`. Všech 5 průchodů proběhlo úspěšně a aserce ověřily očekávané HTTP kódy i struktury odpovědí. Výsledek je doložen na [screenshotu z výsledků Runneru](../screenshots/Payment_service_Mock_Run_Results.png), [screenshotu z Postman Console](../screenshots/Payment_service_Mock_Run_Console.png).
 
 Pozorování: reset indexu v kódu se v tomto běhu neuplatnil (první iterace nezačala na `PAID`). **[OVĚŘIT po opravě: zopakovat běh a zapsat, jak se reset chová.]**
 
