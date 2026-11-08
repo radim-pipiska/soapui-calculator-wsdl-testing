@@ -182,7 +182,7 @@ Vizuální doložení je na [screenshotu sabotáže](../screenshots/Payment_serv
 2. V Runneru test selhal: `AssertionError: expected 10282 to be below 100`. To ukazuje, že aserce se vykoná a čte skutečnou dobu odezvy (zpoždění 10 s funguje).
 3. Podmínka byla následně nahrazena finální verzí (`above 9000`) zobrazenou výše.
 
-Vizuální doložení je na [screenshotu sabotáže](../screenshots/Payment_service_Mock_Run_Console_Sabotage_delay.png) Posabotáži byl příklad vrácen na `1000`
+Vizuální doložení je na [screenshotu sabotáže](../screenshots/Payment_service_Mock_Run_Console_Sabotage_delay.png) Po sabotáži byl příklad vrácen na `1000`
 
 **[OVĚŘIT: finální podmínka `above 9000` zatím sabotáží ověřena nebyla. Test: dočasně nastavit hlavičku `x-mock-response-delay` pro `Scenario_Timeout` na `0`, očekávat červený test, pak vrátit `10000` a zapsat výsledek.]**
 
