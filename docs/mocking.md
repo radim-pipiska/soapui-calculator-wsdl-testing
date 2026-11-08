@@ -46,7 +46,7 @@ Adresa mock serveru není součástí repozitáře. Veřejný mock server může
 ## Skripty a simulace negativních stavů /AI
 
 ### Pre-request Script pro `Zpracovat platbu`
-Skript rotuje scénáře podle proměnné `sequential_index`. Při každém odeslání vybere scénář na tomto indexu, nastaví hlavičky a posune index o jedna (po posledním scénáři se vrací na 0). **[OVĚŘIT: před publikací zkopírovat skript z finálního exportu a porovnat.]**
+Skript rotuje scénáře podle proměnné `sequential_index`. Při každém odeslání vybere scénář na tomto indexu, nastaví hlavičky a posune index o jedna (po posledním scénáři se vrací na 0). Skript je shodný s exportem kolekce (porovnáno 8. 11. 2026).
 
 ```javascript
 // 1. Načteme pole scénářů z proměnných kolekce
@@ -93,7 +93,7 @@ Zkoušel jsem do skriptu přidat automatický reset indexu na 0 na začátku Run
 
 ## Ověření a doložení chybového stavu (Smoke test mocku)
 
-Následující kód je v záložce **Tests** požadavku `Zpracovat platbu`. Slouží výhradně jako **smoke test funkčnosti samotného mocku** (ověřuje, že Postman vybral správný příklad a že zpoždění funguje). Nedokáže ověřit chování objednávkového systému. **[OVĚŘIT: před publikací porovnat s finálním exportem. Verze v dokumentu používá finální podmínku zpoždění, sabotovaná verze (`below 100`) je popsána níže.]**
+Následující kód je v záložce **Tests** požadavku `Zpracovat platbu`. Slouží výhradně jako **smoke test funkčnosti samotného mocku** (ověřuje, že Postman vybral správný příklad a že zpoždění funguje). Nedokáže ověřit chování objednávkového systému. Skript je shodný s exportem kolekce (porovnáno 8. 11. 2026). Sabotované verze jsou popsány níže.
 
 **Smoke test skript/AI:**
 ```javascript
@@ -161,9 +161,9 @@ if (activeScenario === "Scenario_Empty") {
 ---
 
 ### Ověření hromadného běhu (Collection Runner)
-Požadavek byl spuštěn v nástroji **Collection Runner** s počtem **5 iterací** a s `sequential_index` nastaveným na `0`. Postman Console zachytila pořadí scénářů: `Scenario_PAID`, `Scenario_DECLINED`, `Scenario_500`, `Scenario_Empty`, `Scenario_Timeout` (screenshot [Console](../screenshots/Payment_service_Mock_Run_Console.png)). Pátý požadavek trval 10 282 ms, což odpovídá nastavenému zpoždění 10 s.
+Požadavek byl spuštěn v nástroji **Collection Runner** s počtem **5 iterací** a s `sequential_index` nastaveným na `0`. Běh dne 8. 11. 2026 (11:20) proběhl celý zeleně: 10 testů, všech 10 úspěšných, 0 chyb. Scénáře se střídaly v pořadí `Scenario_PAID`, `Scenario_DECLINED`, `Scenario_500`, `Scenario_Empty`, `Scenario_Timeout` a pátý požadavek trval 10 259 ms (zpoždění 10 s). Výsledek je na screenshotu [výsledků Runneru](../screenshots/Payment_service_Mock_Run_Results.png). Stejné pořadí scénářů zachytila i [Postman Console](../screenshots/Payment_service_Mock_Run_Console.png) z dřívějšího běhu.
 
-Screenshot [výsledků Runneru](../screenshots/Payment_service_Mock_Run_Results.png) pochází z běhu s **dočasně sabotovanou** kontrolou doby odezvy (viz další sekce). Proto ukazuje 10 testů, z toho 9 úspěšných a 1 očekávaně neúspěšný. Adresa mock serveru byla z tohoto obrázku před uložením ručně odstraněna v grafickém editoru, v Console je skrytá volbou *Hide network*.
+Adresa mock serveru byla z obrázků výsledků Runneru ručně odstraněna v grafickém editoru, v Console je skrytá volbou *Hide network*.
 
 ---
 
@@ -177,14 +177,19 @@ Aby bylo prokazatelné, že testy pouze pasivně neprocházejí, byly provedeny 
 
 Vizuální doložení je na [screenshotu sabotáže](../screenshots/Payment_service_Scenario_DECLINED_Sabotage.png). Po sabotáži byl příklad vrácen na `402`.
 
-**Sabotáž 2: doba odezvy.**
+**Sabotáž 2: doba odezvy (dočasná opačná podmínka).**
 1. V Tests byla dočasně nastavena opačná podmínka: odezva `Scenario_Timeout` musí být **pod** 100 ms.
 2. V Runneru test selhal: `AssertionError: expected 10282 to be below 100`. To ukazuje, že aserce se vykoná a čte skutečnou dobu odezvy (zpoždění 10 s funguje).
 3. Podmínka byla následně nahrazena finální verzí (`above 9000`) zobrazenou výše.
 
-Vizuální doložení je na [screenshotu sabotáže](../screenshots/Payment_service_Mock_Run_Console_Sabotage_delay.png) Po sabotáži byl příklad vrácen na `1000`
+Vizuální doložení je na [screenshotu sabotáže doby odezvy](../screenshots/Payment_service_Mock_Run_Results_Sabotage_ResponseTime.png).
 
-**[OVĚŘIT: finální podmínka `above 9000` zatím sabotáží ověřena nebyla. Test: dočasně nastavit hlavičku `x-mock-response-delay` pro `Scenario_Timeout` na `0`, očekávat červený test, pak vrátit `10000` a zapsat výsledek.]**
+**Sabotáž 3: finální podmínka (zpoždění nastaveno na 0).**
+1. V pre-request skriptu bylo zpoždění pro `Scenario_Timeout` dočasně změněno z `10000` na `0` (`value: "0"`).
+2. V Runneru (5 iterací, index `0`) selhal v iteraci 5 test: `AssertionError: expected 248 to be above 9000`. Ostatních 9 testů prošlo. Tím je ověřeno, že finální podmínka umí selhat, když zpoždění přestane fungovat.
+3. Zpoždění bylo vráceno na `10000` (potvrzeno exportem kolekce).
+
+Vizuální doložení je na [screenshotu sabotáže zpoždění](../screenshots/Payment_service_Mock_Run_Results_Sabotage_Delay0.png).
 
 ---
 
@@ -214,4 +219,4 @@ Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. J
 
 ## Stav
 
-Poslední ověřený zelený běh: **8.11.2026**. Rozsah ověření: smoke test mocku, požadavek `Zpracovat platbu`, 5 iterací v Runneru.
+Poslední ověřený zelený běh: **8. 11. 2026 (11:20)**. Rozsah ověření: smoke test mocku, požadavek `Zpracovat platbu`, 5 iterací v Runneru.
