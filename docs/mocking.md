@@ -179,7 +179,7 @@ Vizuální doložení je na [screenshotu sabotáže](../screenshots/Payment_serv
 
 **Sabotáž 2: doba odezvy (dočasná opačná podmínka).**
 1. V Tests byla dočasně nastavena opačná podmínka: odezva `Scenario_Timeout` musí být **pod** 100 ms.
-2. V Runneru test selhal: `AssertionError: expected 10282 to be below 100`. To ukazuje, že aserce se vykoná a čte skutečnou dobu odezvy (zpoždění 10 s funguje).
+2. V Runneru test selhal: `AssertionError: expected 10249 to be below 100`. To ukazuje, že aserce se vykoná a čte skutečnou dobu odezvy (zpoždění 10 s funguje).
 3. Podmínka byla následně nahrazena finální verzí (`above 9000`) zobrazenou výše.
 
 Vizuální doložení je na [screenshotu sabotáže doby odezvy](../screenshots/Payment_service_Mock_Run_Results_Sabotage_ResponseTime.png).
