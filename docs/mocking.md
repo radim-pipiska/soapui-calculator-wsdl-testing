@@ -212,4 +212,4 @@ Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. J
 
 ## Stav
 
-Poslední ověřený zelený běh: **[DOPLNIT po běhu finální verze kolekce]**. Rozsah ověření: smoke test mocku, požadavek `Zpracovat platbu`, 5 iterací v Runneru.
+Poslední ověřený zelený běh: **8.11.2026**. Rozsah ověření: smoke test mocku, požadavek `Zpracovat platbu`, 5 iterací v Runneru.
