@@ -1,6 +1,6 @@
-# Testovací sada dat pro POST /payments a Kalkulačku /AI
+# Testovací sada dat pro POST /payments a Kalkulačku
 
-## 1. Testovací sada: POST /payments
+## 1. Testovací sada: POST /payments /AI
 Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinná (CZK, EUR). Specifikace nic neříká o více než dvou desetinných místech ani o záporné hodnotě.
 
 | Hodnota | Co testuje (třída/hranice) | Platná? | Zdroj platnosti | Zbývá otázka / Poznámka |
