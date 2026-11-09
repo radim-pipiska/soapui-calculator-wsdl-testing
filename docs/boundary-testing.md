@@ -22,7 +22,7 @@ Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinn�
 | **třitisíce...** | Třída (Jiný datový typ) | Ne | Domněnka | String místo čísla. Ošetří to vestavěný framework, nebo to proteče do aplikace? |
 | **999999999** | Třída (Extrémní hodnota) | Ne | Návrh (Robustnost) | Test na přetečení datového typu (Overflow). |
 
-## 2. Testovací sada: Mapování na Calculator (Integer hranice)
+## 2. Testovací sada: Mapování na Calculator (Integer hranice) /AI
 Tato tabulka mapuje technické chování aplikace na úrovni 32-bitového Integeru (`int`), kde dochází k ošetření přetečení (overflow) a kontrole struktury vstupu.
 
 | Hodnota / Vstup | Co testuje (třída/hranice) | Platná? | Zdroj platnosti | Zbývá otázka / Poznámka |
