@@ -23,8 +23,10 @@ Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinn�
 ## 2. Testovací sada: Mapování na Calculator (Integer hranice) /AI
 Tato tabulka mapuje technické chování aplikace na úrovni 32-bitového Integeru (`int`), kde dochází k ošetření přetečení (overflow) a kontrole struktury vstupu.
 
-| Hodnota / Vstup | Co testuje (třída/hranice) | Platná? | Zdroj platnosti | Zbývá otázka / Poznámka |
+
+| Hodnota / Vstup | Co testuje (třída/hranice) | Platná? | Zdroj platnosti | Skutečný výsledek (Pozorování z notes.md) |
 | :--- | :--- | :--- | :--- | :--- |
-| **2147483646 + 1** | Hranice (Max platná pro 32-bit int) | Ano | Technická specifikace | Výsledná hodnota `2147483647` je maximální kladné číslo pro podepsaný 32-bit integer. |
-| **2147483647 + 1** | Hranice (Max neplatná - Overflow) | Ne | Návrh (Robustnost) | **Kritický test:** Dojde k přetečení do záporných čísel (`-2147483648`), nebo kalkulačka vyhodí bezpečnou výjimku? |
-| **Prázdný intB** | Třída (Tvar vstupu / Neúplná struktura) | Ne | Domněnka | **Otázka na Dev:** Pokud chybí druhý operant (intB), jak kalkulačka zareaguje? Dosadí defaultní nulu, nebo vrátí chybu validace vstupu? |
+| **2147483646 + 1** | Hranice (Max platná pro 32-bit int) | Ano | WSDL (XSD, s:int) | Výsledná hodnota je `2147483647` (maximální kladné číslo pro podepsaný 32-bit integer). |
+| **2147483647 + 1** | Hranice (Max neplatná - Overflow) | Ne | Pozorování (Chování při přetečení) | **HTTP 500, Fault soap:Server, OverflowException**. Nedochází k přetečení do záporných čísel. |
+| **Prázdný intB** | Třída (Tvar vstupu / Neúplná struktura) | Ne | WSDL (XSD, s:int) | **Fault soap:Client**. Služba nedosazuje defaultní nulu (k tomu docházelo pouze při chybě v namespace). |
+
