@@ -16,7 +16,7 @@ Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinn�
 | null | třída | ne | domněnka | prázdná hodnota, specifické |
 | chybějící pole | třída | ne | domněnka | je parametr amount povinný? |
 | 0.0123 | hranice | nejasné | domněnka | zaokrouhlení, oříznutí, odmítnutí? |
-| -0.01 | záporná hodnota | ne | specifikace | co se stane se zápornou hodnotou menší než 0.00? |
+| -0.01 | záporná hodnota | ne | domněnka | co se stane se zápornou hodnotou menší než 0.00? |
 | 100,50 | třída | ne | domněnka | desetinná čárka místo tečky, co se stane? |
 | třitisícestodvacetdvě | třída | ne | domněnka | jiný datový typ, co se stane? |
 
