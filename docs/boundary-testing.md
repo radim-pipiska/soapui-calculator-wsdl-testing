@@ -11,18 +11,17 @@ Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinn�
 | 9999.99 | hranice | ano | specifikace | |
 | 0.02 | hranice | ano | specifikace | |
 | 10000.01 | hranice | ne | specifikace | |
-| 0.00 | hranice | ne | domněnka | hodnota 0.0, specifické |
-| 100 | třída | ano | domněnka | doplní dvě desetinná místa? |
-| null | třída | ne | domněnka | prázdná hodnota, specifické |
+| 0.00 | hranice | ne | specifikace | co se stane při hodnotě 0.00? |
+| 100 | třída | ano | nejasné | doplní dvě desetinná místa? |
+| null | třída | ne | domněnka | co se stane s prázdnou hodnotou |
 | chybějící pole | třída | ne | domněnka | je parametr amount povinný? |
 | 0.0123 | hranice | nejasné | domněnka | zaokrouhlení, oříznutí, odmítnutí? |
-| -0.01 | záporná hodnota | ne | domněnka | co se stane se zápornou hodnotou menší než 0.00? |
+| -0.01 | záporná hodnota | ne | specifikace | co se stane se zápornou hodnotou menší než 0.00? |
 | 100,50 | třída | ne | domněnka | desetinná čárka místo tečky, co se stane? |
 | třitisícestodvacetdvě | třída | ne | domněnka | jiný datový typ, co se stane? |
 
 ## 2. Testovací sada: Mapování na Calculator (Integer hranice) /AI
 Tato tabulka mapuje technické chování aplikace na úrovni 32-bitového Integeru (`int`), kde dochází k ošetření přetečení (overflow) a kontrole struktury vstupu.
-
 
 | Hodnota / Vstup | Co testuje (třída/hranice) | Platná? | Zdroj platnosti | Skutečný výsledek (Pozorování z notes.md) |
 | :--- | :--- | :--- | :--- | :--- |
