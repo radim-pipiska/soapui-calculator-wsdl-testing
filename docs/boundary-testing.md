@@ -12,7 +12,7 @@ Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinn�
 | 0.02 | hranice | ano | specifikace | |
 | 10000.01 | hranice | ne | specifikace | |
 | 0.00 | hranice | ne | specifikace | co se stane při hodnotě 0.00? |
-| 100 | třída | ano | nejasné | doplní dvě desetinná místa? |
+| 100 | třída | nejasné | otázka na analytika | doplní dvě desetinná místa? |
 | null | třída | ne | domněnka | co se stane s prázdnou hodnotou |
 | chybějící pole | třída | ne | domněnka | je parametr amount povinný? |
 | 0.0123 | hranice | nejasné | domněnka | zaokrouhlení, oříznutí, odmítnutí? |
