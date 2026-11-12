@@ -29,7 +29,7 @@ Při každém ukončení smyčky (úspěchu i selhání) je nutné **vždy zalog
 * Poslední známý stav
 * Počet spotřebovaných pokusů
 
-Bez těchto informací se selhání v logách nedá vyšetřit.
+Bez těchto informací se selhání v lozích nedá vyšetřit.
 
 ### Tři konce asynchronní smyčky
 
