@@ -1,6 +1,6 @@
 # REST, SOAP a messaging očima testera
 
-REST chování z testování Vacation API, SOAP chování pozorováno na veřejném Calculatoru, messaging je z cvičení bez reálného brokeru.
+REST chování je z testování Vacation API, SOAP chování pozorováno na veřejném Calculatoru, messaging je z cvičení bez reálného brokeru.
 
 | | REST | SOAP | Messaging |
 | :--- | :--- | :--- | :--- |
