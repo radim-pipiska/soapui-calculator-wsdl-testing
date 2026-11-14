@@ -297,7 +297,7 @@ Hypotéza k D (nepotvrzeno): server nenalezené `intA` a `intB` vzal jako výcho
 
 ## 6. Kontrola výstupu AI
 
-- AI tvrdila, že HTTP 500 je v SOAP "univerzální chyba". Nepřesné: SOAP 1.1 předepisuje 500 pro každý Fault (včetně chyb klienta), ale 500 může přijít i bez Faultu (např. HTML stránka proxy). Proto kontroluji, že tělo je skutečně `<soap:Fault>`. [SOAP 1.1 (W3C Note, 2000) - sekce 6.2 a 4.4.1] (https://www.w3.org/TR/2000/NOTE-SOAP-20000508/)
+- AI tvrdila, že HTTP 500 je v SOAP "univerzální chyba". Nepřesné: SOAP 1.1 předepisuje 500 pro každý Fault (včetně chyb klienta), ale 500 může přijít i bez Faultu (např. HTML stránka proxy). Proto kontroluji, že tělo je skutečně `<soap:Fault>`. [SOAP 1.1 (W3C Note, 2000) - sekce 6.2 a 4.4.1](https://www.w3.org/TR/2000/NOTE-SOAP-20000508/)
 - `//*[local-name()='AddResult']` ignoruje namespace, takže nedokazuje, že je namespace správně. Pro hlídání kontraktu používám deklaraci namespace.
 - Při návrhu promptu pro AI jsem měl ve vzoru očekávání `DivideByZero`, ale skutečný Fault obsahuje `System.OverflowException`. Očekávání z domněnky místo z pozorování by dalo zbytečně červenou aserci. Do promptu patří skutečná odpověď a správná URL služby (`http://www.dneonline.com/calculator.asmx`).
 - Lekce: u každé aserce vyzkoušet, že umí selhat (hodnota, namespace, vstup) a po sabotáži vrátit výchozí stav.
