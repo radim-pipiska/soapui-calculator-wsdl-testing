@@ -1,6 +1,6 @@
 # SoapUI: testování SOAP služby Calculator (WSDL, XML, XPath, řetězení kroků)
 
-Učební projekt (říjen 2026): testování SOAP API v **SoapUI 5.10.0** na veřejné demo službě třetí strany `http://www.dneonline.com/calculator.asmx?WSDL`. Nejsem autor ani provozovatel služby. Specifikace chování neexistuje, proto jsou závěry označeny jako **pozorování**, ne jako potvrzené vady.
+Učební projekt (říjen–listopad 2026): testování SOAP API v **SoapUI 5.10.0** na veřejné demo službě třetí strany `http://www.dneonline.com/calculator.asmx?WSDL`. Nejsem autor ani provozovatel služby. Specifikace chování neexistuje, proto jsou závěry označeny jako **pozorování**, ne jako potvrzené vady.
 
 # Fáze 2A: integrační architektura
 
@@ -61,7 +61,7 @@ Použité aserce: SOAP Response, Schema Compliance, XPath Match (včetně funkce
 
 ## Stav
 
-Rozpracováno. Poslední ověřený zelený běh: 31. 10. 2026. Otevřené body jsou na konci `notes.md`.
+Rozpracováno. Poslední ověřený zelený běh Calculatoru je: 31. 10. a Payment service Mocku je z 8. 11.2026. Otevřené body jsou na konci `notes.md`.
 
 ## Licence
 
