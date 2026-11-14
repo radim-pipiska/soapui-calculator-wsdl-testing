@@ -1,7 +1,7 @@
 # Testovací sada dat pro POST /payments a Calculator
 
 ## 1. Testovací sada: POST /payments
-Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinná (CZK, EUR). Specifikace nic neříká o více než dvou desetinných místech ani o záporné hodnotě.
+Fiktivní specifikace: amount je 0,01 až 10000,00 včetně. Záporné hodnoty plynou z rozsahu, spec neříká, jak se odmítnou. Spec nic neříká o více než dvou desetinných místech.
 
 | hodnota | co testuje (třída/hranice) | platná? | zdroj platnosti | Otázka na analytika |
 | :--- | :--- | :--- | :--- | :--- |
@@ -14,8 +14,8 @@ Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinn�
 | 0.00 | hranice | ne | specifikace | co se stane při hodnotě 0.00? |
 | 100 | třída | nejasné | otázka na analytika | doplní dvě desetinná místa? |
 | null | třída | ne | domněnka | co se stane s prázdnou hodnotou |
-| chybějící pole | třída | ne | domněnka | je parametr amount povinný? |
-| 0.0123 | hranice | nejasné | domněnka | zaokrouhlení, oříznutí, odmítnutí? |
+| chybějící pole | třída | nejasné | otázka na analytika | je parametr amount povinný? |
+| 0.0123 | hranice | nejasné | otázka na analytika | zaokrouhlení, oříznutí, odmítnutí? |
 | -0.01 | záporná hodnota | ne | specifikace | co se stane se zápornou hodnotou menší než 0.00? |
 | 100,50 | třída | ne | domněnka | desetinná čárka místo tečky, co se stane? |
 | třitisícestodvacetdvě | třída | ne | domněnka | jiný datový typ, co se stane? |
