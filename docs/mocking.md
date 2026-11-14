@@ -168,7 +168,7 @@ Adresa mock serveru byla z obrázků výsledků Runneru ručně odstraněna v gr
 ---
 
 ### Doložení sabotáže (Ověření, že test umí selhat)
-Aby bylo prokazatelné, že testy pouze pasivně neprocházejí, byly provedeny dvě sabotáže.
+Aby bylo prokazatelné, že testy pouze pasivně neprocházejí, byly provedeny tři sabotáže.
 
 **Sabotáž 1: status kód.**
 1. U uloženého příkladu `Scenario_DECLINED` byl záměrně změněn návratový status kód z `402 Payment Required` na `200 OK`.
