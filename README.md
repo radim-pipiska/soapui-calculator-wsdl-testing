@@ -2,6 +2,13 @@
 
 Učební projekt (říjen 2026): testování SOAP API v **SoapUI 5.10.0** na veřejné demo službě třetí strany `http://www.dneonline.com/calculator.asmx?WSDL`. Nejsem autor ani provozovatel služby. Specifikace chování neexistuje, proto jsou závěry označeny jako **pozorování**, ne jako potvrzené vady.
 
+# Fáze 2A: integrační architektura
+[Integrační testování: Návrh odpovědí mocku platební služby](docs/mocking.md)
+[Testovací sada dat pro POST /payments a Calculator](docs/boundary-testing.md)
+[Asynchronní testování: Tři typické problémy front a otázky na analytika](docs/messaging-risks.md)
+[Testování asynchronní komunikace a princip Pollingu](docs/sync-vs-async.md)
+[REST, SOAP a messaging očima testera](docs/rest-soap-messaging.md)
+
 ## Obsah repozitáře
 
 - `soapui/Calculator-soapui-project.xml` export projektu SoapUI (bez hesel a tajných hodnot)
