@@ -3,7 +3,7 @@
 ## 1. Testovací sada: POST /payments
 Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinná (CZK, EUR). Specifikace nic neříká o více než dvou desetinných místech ani o záporné hodnotě.
 
-| hodnota | co testuje (třída/hranice) | platná? | zdroj platnosti | Jaký status kód a tělo chyby vrací odmítnutý 'amount'? |
+| hodnota | co testuje (třída/hranice) | platná? | zdroj platnosti | Otázka na analytika |
 | :--- | :--- | :--- | :--- | :--- |
 | 8642.64 | třída | ano | specifikace | |
 | 10000.00 | hranice | ano | specifikace | platí maximum 10000 stejně pro CZK i EUR? |
