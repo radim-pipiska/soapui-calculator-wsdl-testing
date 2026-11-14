@@ -7,6 +7,7 @@ Učební projekt (říjen 2026): testování SOAP API v **SoapUI 5.10.0** na ve�
 - `soapui/Calculator-soapui-project.xml` export projektu SoapUI (bez hesel a tajných hodnot)
 - `notes.md` pozorování, experimenty a doslovné hlášky
 - `docs/ai-review.md` kontrola výstupů AI (tvrzení, ověření, verdikt)
+- `Postman` [Payment service Mock](postman/Payment_Service_Mock.postman_collection.json)
 - `prompts/` verze promptů pro AI a jejich výstupy
 - `screenshots/` důkazy k experimentům
 
