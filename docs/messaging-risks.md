@@ -1,6 +1,6 @@
 # Asynchronní testování: Tři typické problémy front a otázky na analytika
 
-Při testování asynchronní komunikace přes fronty zpráv (např. RabbitMQ, Kafka) narážíme na tři specifické problémy, které se u synchronního API nevyskytují. Níže je uvedena jejich specifikace na příkladu endpointu `POST /orders` (který vrací stav `202` a zpracovává objednávku na pozadí).
+Při testování asynchronní komunikace přes fronty zpráv (např. RabbitMQ, Kafka) narážíme na tři specifické problémy, které se u synchronního API nevyskytují. Níže je uvedena jejich specifikace na příkladu fiktivního endpointu `POST /orders` (který vrací stav `202` a zpracovává objednávku na pozadí).
 
 | Problém | Co to znamená v praxi (Příklad) | Kam se podívat / Co testovat | Klíčové otázky na analytika (Requirements Refining) |
 | :--- | :--- | :--- | :--- |
