@@ -19,6 +19,7 @@ Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinn�
 | -0.01 | záporná hodnota | ne | specifikace | co se stane se zápornou hodnotou menší než 0.00? |
 | 100,50 | třída | ne | domněnka | desetinná čárka místo tečky, co se stane? |
 | třitisícestodvacetdvě | třída | ne | domněnka | jiný datový typ, co se stane? |
+Jaký status kód a tělo chyby vrací odmítnutý 'amount'?
 
 ## 2. Testovací sada: Mapování na Calculator (Integer hranice) /AI
 Tato tabulka mapuje technické chování aplikace na úrovni 32-bitového Integeru (`int`), kde dochází k ošetření přetečení (overflow) a kontrole struktury vstupu.
