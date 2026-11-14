@@ -199,7 +199,6 @@ Při exportu kolekce vygeneruje Postman v JSON struktuře pole `_exporter_id`. J
 ---
 
 ## Odkazy a zdroje
-* Pravidla pro neomezené využití mocků: [Postman Docs - About plans](https://learning.postman.com/latest-v-12/docs/billing/about-plans.md) (ověřeno k 7. listopadu 2026).
 * Konfigurace zpoždění odpovědi mock serveru přes hlavičky: [Postman Learning Hub - Mock with API (x-mock-response-delay)](https://learning.postman.com/docs/design-apis/mock-apis/tutorials/mock-with-api).
 * Jak server Postman mock odpovídá požadavkům na uložené příklady: [Postman Learning Hub - Matching Algorithm](https://learning.postman.com/docs/design-apis/mock-apis/mock-servers/matching-algorithm/).
 * Hodnoty `pm.info.eventName` a `pm.info.iteration`: [Postman Docs - pm.info](https://learning.postman.com/docs/tests-and-scripts/write-scripts/postman-sandbox-reference/pm-info) (ověřeno 8. listopadu 2026).
