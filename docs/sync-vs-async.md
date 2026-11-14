@@ -39,7 +39,7 @@ Smyčka opakovaných GET dotazů na stav objednávky musí končit přesně **t�
 2. **Chybový konečný stav (`FAILED`)** → Smyčka se okamžitě zastaví. Čekat dál nemá smysl, test ihned selže (zčervená), protože objednávka se nezpracovala.
 3. **Vyčerpání limitu pokusů** → Stav je i po limitu stále průběžný (`PENDING` nebo `PROCESSING`). Smyčka končí a test selže s hláškou *„Nedokončeno v limitu“*.
 
-*Poznámka: Pokud systém vrátí jakýkoliv **neznámý stav** (mimo specifikované čtyři: `PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`), smyčka musí okamžitě skončit a test spadnout, aby se netočil donekonečna.*
+*Poznámka: Pokud systém vrátí jakýkoliv **neznámý stav** (mimo specifikované čtyři: `PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`), smyčka musí okamžitě skončit a test spadnout, aby se netočil donekonečna. Limit a interval dodává analytik, ne AI.*
 
 ### Ověření větví pomocí sabotáží (Mocking)
 
