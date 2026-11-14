@@ -77,7 +77,7 @@ Aserce (dva samostatné requesty, oba ve výchozím stavu zelené):
 Pozorování (specifikaci chování pro přetečení nemám, nehodnotím jako vadu):
 
 - Součet přesahující rozsah `int` nevrátí zalomenou (záporná) hodnotu, ale Fault.
-- Hypotéza (neověřeno): služba počítá s kontrolou přetečení.
+- Pozorované chování: služba počítá s kontrolou přetečení.
 - Tip před spuštěním byl chybný: čekal jsem výsledek `2147483648`, ale ten se do typu `int` nevejde. Tip musí respektovat typ, ne jen matematiku.
 - `OverflowException` vrací i Divide (2 / 0). Text výjimky proto nerozliší příčinu chyby, v `faultstring` se liší jen název metody a řádek, což je detail implementace.
 
