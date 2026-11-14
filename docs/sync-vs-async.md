@@ -31,7 +31,7 @@ Při každém ukončení smyčky (úspěchu i selhání) je nutné **vždy zalog
 
 Bez těchto informací se selhání v lozích nedá vyšetřit.
 
-### Tři konce asynchronní smyčky
+### Tři očekávané konce a pojistka na neznámý stav
 
 Smyčka opakovaných GET dotazů na stav objednávky musí končit přesně **třemi způsoby**:
 
