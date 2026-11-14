@@ -26,7 +26,7 @@ Celá konfigurace mocku je navržena tak, aby byla přenositelná v rámci jedno
 Kolekce obsahuje pouze jeden požadavek. Původně zamýšlený náhodný režim byl odstraněn, protože nepředvídatelný běh generoval při každém spuštění jiné pokrytí scénářů, což je pro regresní testování nevhodné.
 
 Definice dat mocku i samotný volající jsou sloučeny do jednoho prvku:
-* **`Zpracovat platbu`** – testovací požadavek se sekvenční rotací scénářů. Přímo pod ním je uloženo 5 příkladů (Examples) s unikátními názvy: `Scenario_PAID`, `Scenario_DECLINED`, `Scenario_500`, `Scenario_Empty` a `Scenario_Timeout`.
+* **`Zpracovat platbu`** – testovací požadavek se sekvenční rotací scénářů. Přímo pod ním je uloženo 5 příkladů (Examples) s unikátními názvy: `Scenario_PAID`, `Scenario_DECLINED`, `Scenario_500`, `Scenario_Empty` a `Scenario_Timeout` *(název je historický).*
 
 ### Správa proměnných (Důležité pro import)
 Aby byla kolekce funkční ihned po importu, hodnoty musí být zapsány ve sloupci **Initial Value** (v novějších verzích Postmanu označeném *Shared value*). První export kolekce měl proměnné prázdné, protože byly vyplněny jen v *Current Value* (*Local value*).
