@@ -90,47 +90,200 @@ Pozorování (specifikaci chování pro přetečení nemám, nehodnotím jako va
 
 ## 5. Experimenty (sabotáže)
 
-| # | Co jsem změnil | Odpověď serveru | Výsledek aserce |
-|---|---|---|---|
-| A | XPath `//AddResult` bez deklarace, očekáváno 12 | 12 | FAILED |
-| B | XPath `//ns1:AddResult` s `ns1` = `http://tempuri.org/` | 12 | VALID |
-| C | Deklarace `ns1` změněna na `http://tempura.org/` | 12 | FAILED (element v tom namespace není) |
-| D | V **requestu** `xmlns:tem` změněno na `http://tempura.org/` | **0** bez chyby | XPath Match FAILED (čekáno 12 nebo 99, přišlo 0) |
-| E | Očekávaná hodnota 13 místo 12 | 12 | FAILED |
-| F | Očekávaná hodnota `12` plus nový řádek | 12 | [FAILED](screenshots/add_input_12_newline.png) |
-| G | Divide: Valid HTTP Status Codes změněno z 500 na `200` | Fault, HTTP 500 | FAILED: `Response status code:500 is not in acceptable list of status codes` |
-| H | Divide: XPath Match na `faultcode`, očekáváno `soap:Client` | `soap:Server` | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/';//soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]` |
-| I | Divide: aserce SOAP Fault nahrazena aserci Not SOAP Fault | Fault | FAILED: `Response is a SOAP Fault` |
-| J | Klon `Add - overflow` (2147483647 + 1) zdědil XPath na `//ns1:AddResult` | Fault, HTTP 500 | FAILED: `XPathContains assertion failed for path [...//ns1:AddResult] : Exception:Missing content for xpath [...] in Response` |
-| K | Add 2147483646 + 1, očekáváno `12` | 2147483647 | FAILED: `XPathContains comparison failed for path [...//ns1:AddResult], expecting [12], actual was [2147483647]` |
-| L | `Add - overflow` s aserci na 500, ale validní vstup 2147483646 + 1 | 2147483647, HTTP 200 | Valid HTTP Status Codes FAILED: `Response status code:200 is not in acceptable list of status codes` |
-| M | Stejný vstup, aserce SOAP Fault | `AddResult` bez Faultu | SOAP Fault FAILED: `Response is not a SOAP Fault` |
-| N | `Add - max valid`, očekáváno `2147483648` | 2147483647 | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; declare namespace ns1='http://tempuri.org/'; //ns1:AddResult], expecting [2147483648], actual was [2147483647]` |
-| O | `Add - overflow`, XPath Match na `faultcode`, očekáváno `soap:Client` | `soap:Server` | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; //soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]` |
-| P | Divide 2 / 0, aserce na `faultstring` od AI (CZ v6), Allow Wildcards zaškrtnuto, Expected `*Server was unable to process request.*System.OverflowException: Arithmetic operation resulted in an overflow.*` | Fault, `faultstring` začíná `System.Web.Services.Protocols.SoapException: Server was unable to process request. ---> System.OverflowException: Arithmetic operation resulted in an overflow.`, pak nový řádek a `at Calculator.Divide(...)` | **FAILED už ve výchozím stavu**: `XPathContains comparison failed for path [...//soap:Fault/faultstring], expecting [*...overflow.*], actual was [System.Web.Services.Protocols.SoapException: ...]` (zkráceno) |
-| Q | Totéž, Expected změněno na `*...System.DivideByZeroException: Arithmetic operation resulted in an overflow.*` | stejná odpověď | FAILED stejnou hláškou. Nic nedokazuje, protože aserce byla červená už před sabotáží |
-| R | Divide 2 / 2, aserce na `faultstring` | úspěšná odpověď bez Faultu | FAILED: `XPathContains assertion failed for path [...//soap:Fault/faultstring] : Exception:Missing content for xpath [...] in Response` |
-| S | Divide 2 / 2 (platný vstup), aserce pro Fault (Valid HTTP Status Codes, XPath na `faultcode`) | HTTP 200, `<DivideResponse xmlns="http://tempuri.org/"><DivideResult>1</DivideResult></DivideResponse>` | Valid HTTP Status Codes FAILED: `Response status code:200 is not in acceptable list of status codes`. XPath Match FAILED: `Exception:Missing content for xpath [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/';//soap:Fault/faultcode]` |
-| T | Test wildcardu: Expected `soap:*` (Allow Wildcards) na XPath `faultstring` (měl být `faultcode`) | Fault | FAILED: `expecting [soap:*], actual was [System.Web.Services.Protocols.SoapException: ...]`. Nic nedokazuje, `faultstring` nezačíná `soap:`. Test zopakovat na `faultcode` |
-| U | Divide 2 / 0, aserce Contains s obsahem `System.OverflowException` | Fault | VALID (zelená ve výchozím stavu) |
-| V | Divide 2 / 0, XPath `//soap:Envelope/soap:Body/soap:Fault/faultcode`, Expected `soap:*`, Allow Wildcards | Fault | VALID (wildcard funguje na jednořádkové hodnotě) |
-| W | Divide 2 / 0, XPath `normalize-space(//soap:Fault/faultstring)` (jeden řádek), Expected `*Server was unable to process request.*System.OverflowException: Arithmetic operation resulted in an overflow.*`, Allow Wildcards | Fault | FAILED i na jednom řádku: `expecting [*...overflow.*], actual was [System.Web.Services.Protocols.SoapException: Server was unable to process request. ---> System.OverflowException: Arithmetic operation resulted in an overflow. at Calculator.Divide(Int32 intA, Int32 intB) in G:\...:line 19 --- End of inner exception stack trace ---]`. Pokus je neplatný: wildcard nefunguje na výsledku funkce vůbec (řádek AI), takže o novém řádku nic neříká. Příčina neznámá |
-| X | Divide 2 / 0, aserce Contains s obsahem `System.DivideByZeroException` | Fault | FAILED: `Missing token [System.DivideByZeroException] in Response` |
-| Y | `Divide - request` 2 / 2 (happy path), XPath `//ns1:DivideResult`, očekáváno `2` místo `1` | `DivideResult` = 1 | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; declare namespace ns1='http://tempuri.org/'; //ns1:DivideResult], expecting [2], actual was [1]`. Výchozí stav před sabotáží: 5 aserací zelených (SOAP Response, Valid HTTP Status Codes, Schema Compliance, Not SOAP Fault, XPath Match) |
-| Z | `Divide - request` 7 / 2 (bez specifikace, pozorování) | `DivideResult` = **4**, bez Faultu | Tip předem 4 (zaokrouhlení 3,5) byl správný. Výsledek není celočíselné dělení s oříznutím (to by dalo 3). Možné vysvětlení: zaokrouhlení nebo zaokrouhlení nahoru `[HYPOTÉZA]`. Podle WSDL je `DivideResult` typu `s:int` |
-| AA | Divide 2 / 0, wildcard na `normalize-space(//soap:Fault/faultstring)`: A) `System.Web.Services.Protocols.SoapException*`, B) `*System.OverflowException*`, C) `*Server was unable to process request.*System.OverflowException*` | Fault | **Všechny tři FAILED** (tip A selže: správně, B projde: chybně, C selže: správně). Přitom `soap:*` na `faultcode` funguje. Pokusy jsou neplatné, protože wildcard na výsledku funkce nefunguje (řádek AI). O počtu hvězdiček, tečce ani novém řádku z nich nelze nic vyvodit. Příčina neznámá |
-| AB | Divide 2 / 0, XPath `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')`, Expected `true` | Fault | VALID (zelená ve výchozím stavu, sabotáž viz řádek AE) |
-| AC | Divide 2 / 0, `faultcode` s `soap:*`: změněna deklarace prefixu na `xsoap`, ale zbytek cesty zůstal `soap:Body/soap:Fault` | Fault | FAILED. Pravděpodobně chyba výrazu (nedeklarovaný prefix `soap`), ne neshoda hodnoty (celá hláška nezachycena, proto sabotáž zopakována jako řádek AD) |
-| AD | Divide 2 / 0, `faultcode`, XPath `//soap:Envelope/soap:Body/soap:Fault/faultcode`, Expected změněno na `xsoap:*` (jen hodnota) | Fault | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; //soap:Envelope/soap:Body/soap:Fault/faultcode], expecting [xsoap:*], actual was [soap:Server]` |
-| AE | Divide 2 / 0, `contains(normalize-space(//soap:Fault/faultstring), 'System.DivideByZeroException')`, Expected `true` | Fault | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; contains(normalize-space(//soap:Fault/faultstring), 'System.DivideByZeroException')], expecting [true], actual was [false]`. Tip předem `Missing content` byl chybný: funkce vrací vždy `true` nebo `false` Ověřeno na vstupu 2 / 2 (řádek AH) |
-| AF | Divide 2 / 0, `normalize-space(//soap:Fault/faultstring)`, Allow Wildcards, Expected D) `*unable*`, F) `System*` | Fault | Obě FAILED. Vysvětlení: wildcard nefunguje na výsledku funkce (řádek AI), závěr o tečce ani o novém řádku z toho vyvodit nelze |
-| AG | Divide 0 / 0 | Stejný Fault jako 2 / 0 (`System.OverflowException`, `Calculator.Divide`, řádek 19) | Tip předem `OverflowException` byl správný. Konzistentní s hypotézou o dělení desetinných čísel s převodem na `int` (podporují ji i 7 / 2 = 4 a 2 / 0), není to důkaz `[HYPOTÉZA]` |
-| AH | Divide 2 / 2 (bez Faultu), aserce `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')`, Expected `true` | úspěšná odpověď | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')], expecting [true], actual was [false]`. Tip předem správný. Aserce s funkcí nerozliší „element chybí“ od „text nesedí“ (uzlová aserce by hlásila `Missing content`) |
-| AI | Divide 2 / 0, `normalize-space(//soap:Fault/faultcode)`, Allow Wildcards, Expected `soap:*` a také `soap:Server` | Fault | **FAILED**: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; normalize-space(//soap:Fault/faultcode)], expecting [soap:*], actual was [soap:Server]`. Uzlová verze téhož (`//soap:Envelope/soap:Body/soap:Fault/faultcode`) je zelená, wildcard tedy nefunguje na výsledku funkce. Dřívější tvrzení „obě zelené“ (úloha 16) bylo chybné a nebylo doloženo screenshotem |
-| AJ | Divide by Zero, `faultcode` přesně (Allow Wildcards vypnuto), Expected změněno na `soap:Client` | Fault `soap:Server` | FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; //soap:Envelope/soap:Body/soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]` |
-| AK | Chain: `intA` v `Add_Druhy` předem `-1`, Property Transfer zakázán | krok 3 pošle -1 + 7 | `AddResult` = 6. Hláška: `XPathContains comparison failed for path [declare namespace soap='http://www.w3.org/2003/05/soap-envelope'; declare namespace ns1='http://tempuri.org/'; //ns1:AddResult], expecting [200012], actual was [6]`. Tip předem „vše zelené“ byl chybný |
-| AL | Divide by Zero s prázdným `intB` (`<tem:intB></tem:intB>`), rozhraní SOAP 1.1 | Fault `soap:Client`, `faultstring`: `System.Web.Services.Protocols.SoapException: Server was unable to read request. ---> System.InvalidO...` (stack trace s `ParseInt32` a `Read7_Divide`) | `faultcode` FAILED: `expecting [soap:Server], actual was [soap:Client]`. `faultstring obsahuje OverflowException` FAILED: `expecting [true], actual was [false]`. **Valid HTTP Status Codes (500) a SOAP Fault zůstaly VALID**, takže chybu klienta od chyby serveru neodliší. Tip předem: „nevím“ |
-| AM | Divide 2 / 0, pozitivní kontrola: `normalize-space(//soap:Fault/faultcode)`, Expected doslovně `soap:Server`, Allow Wildcards **vypnuto** | Fault `soap:Server` | VALID (zelená, tip předem správný). Funkce tedy vrací správný text a selhává jen wildcard (`soap:*`, řádek AI). Mechanismus neznám. Aserce po pokusu smazána |
+**A**
+- Co jsem změnil: XPath `//AddResult` bez deklarace, očekáváno 12
+- Odpověď serveru: 12
+- Výsledek aserce: FAILED
+
+**B**
+- Co jsem změnil: XPath `//ns1:AddResult` s `ns1` = `http://tempuri.org/`
+- Odpověď serveru: 12
+- Výsledek aserce: VALID
+
+**C**
+- Co jsem změnil: Deklarace `ns1` změněna na `http://tempura.org/`
+- Odpověď serveru: 12
+- Výsledek aserce: FAILED (element v tom namespace není)
+
+**D**
+- Co jsem změnil: V **requestu** `xmlns:tem` změněno na `http://tempura.org/`
+- Odpověď serveru: **0** bez chyby
+- Výsledek aserce: XPath Match FAILED (čekáno 12 nebo 99, přišlo 0)
+
+**E**
+- Co jsem změnil: Očekávaná hodnota 13 místo 12
+- Odpověď serveru: 12
+- Výsledek aserce: FAILED
+
+**F**
+- Co jsem změnil: Očekávaná hodnota `12` plus nový řádek
+- Odpověď serveru: 12
+- Výsledek aserce: [FAILED](screenshots/add_input_12_newline.png)
+
+**G**
+- Co jsem změnil: Divide: Valid HTTP Status Codes změněno z 500 na `200`
+- Odpověď serveru: Fault, HTTP 500
+- Výsledek aserce: FAILED: `Response status code:500 is not in acceptable list of status codes`
+
+**H**
+- Co jsem změnil: Divide: XPath Match na `faultcode`, očekáváno `soap:Client`
+- Odpověď serveru: `soap:Server`
+- Výsledek aserce: FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/';//soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]`
+
+**I**
+- Co jsem změnil: Divide: aserce SOAP Fault nahrazena aserci Not SOAP Fault
+- Odpověď serveru: Fault
+- Výsledek aserce: FAILED: `Response is a SOAP Fault`
+
+**J**
+- Co jsem změnil: Klon `Add - overflow` (2147483647 + 1) zdědil XPath na `//ns1:AddResult`
+- Odpověď serveru: Fault, HTTP 500
+- Výsledek aserce: FAILED: `XPathContains assertion failed for path [...//ns1:AddResult] : Exception:Missing content for xpath [...] in Response`
+
+**K**
+- Co jsem změnil: Add 2147483646 + 1, očekáváno `12`
+- Odpověď serveru: 2147483647
+- Výsledek aserce: FAILED: `XPathContains comparison failed for path [...//ns1:AddResult], expecting [12], actual was [2147483647]`
+
+**L**
+- Co jsem změnil: `Add - overflow` s aserci na 500, ale validní vstup 2147483646 + 1
+- Odpověď serveru: 2147483647, HTTP 200
+- Výsledek aserce: Valid HTTP Status Codes FAILED: `Response status code:200 is not in acceptable list of status codes`
+
+**M**
+- Co jsem změnil: Stejný vstup, aserce SOAP Fault
+- Odpověď serveru: `AddResult` bez Faultu
+- Výsledek aserce: SOAP Fault FAILED: `Response is not a SOAP Fault`
+
+**N**
+- Co jsem změnil: `Add - max valid`, očekáváno `2147483648`
+- Odpověď serveru: 2147483647
+- Výsledek aserce: FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; declare namespace ns1='http://tempuri.org/'; //ns1:AddResult], expecting [2147483648], actual was [2147483647]`
+
+**O**
+- Co jsem změnil: `Add - overflow`, XPath Match na `faultcode`, očekáváno `soap:Client`
+- Odpověď serveru: `soap:Server`
+- Výsledek aserce: FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; //soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]`
+
+**P**
+- Co jsem změnil: Divide 2 / 0, aserce na `faultstring` od AI (CZ v6), Allow Wildcards zaškrtnuto, Expected `*Server was unable to process request.*System.OverflowException: Arithmetic operation resulted in an overflow.*`
+- Odpověď serveru: Fault, `faultstring` začíná `System.Web.Services.Protocols.SoapException: Server was unable to process request. ---> System.OverflowException: Arithmetic operation resulted in an overflow.`, pak nový řádek a `at Calculator.Divide(...)`
+- Výsledek aserce: **FAILED už ve výchozím stavu**: `XPathContains comparison failed for path [...//soap:Fault/faultstring], expecting [*...overflow.*], actual was [System.Web.Services.Protocols.SoapException: ...]` (zkráceno)
+
+**Q**
+- Co jsem změnil: Totéž, Expected změněno na `*...System.DivideByZeroException: Arithmetic operation resulted in an overflow.*`
+- Odpověď serveru: stejná odpověď
+- Výsledek aserce: FAILED stejnou hláškou. Nic nedokazuje, protože aserce byla červená už před sabotáží
+
+**R**
+- Co jsem změnil: Divide 2 / 2, aserce na `faultstring`
+- Odpověď serveru: úspěšná odpověď bez Faultu
+- Výsledek aserce: FAILED: `XPathContains assertion failed for path [...//soap:Fault/faultstring] : Exception:Missing content for xpath [...] in Response`
+
+**S**
+- Co jsem změnil: Divide 2 / 2 (platný vstup), aserce pro Fault (Valid HTTP Status Codes, XPath na `faultcode`)
+- Odpověď serveru: HTTP 200, `<DivideResponse xmlns="http://tempuri.org/"><DivideResult>1</DivideResult></DivideResponse>`
+- Výsledek aserce: Valid HTTP Status Codes FAILED: `Response status code:200 is not in acceptable list of status codes`. XPath Match FAILED: `Exception:Missing content for xpath [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/';//soap:Fault/faultcode]`
+
+**T**
+- Co jsem změnil: Test wildcardu: Expected `soap:*` (Allow Wildcards) na XPath `faultstring` (měl být `faultcode`)
+- Odpověď serveru: Fault
+- Výsledek aserce: FAILED: `expecting [soap:*], actual was [System.Web.Services.Protocols.SoapException: ...]`. Nic nedokazuje, `faultstring` nezačíná `soap:`. Test zopakovat na `faultcode`
+
+**U**
+- Co jsem změnil: Divide 2 / 0, aserce Contains s obsahem `System.OverflowException`
+- Odpověď serveru: Fault
+- Výsledek aserce: VALID (zelená ve výchozím stavu)
+
+**V**
+- Co jsem změnil: Divide 2 / 0, XPath `//soap:Envelope/soap:Body/soap:Fault/faultcode`, Expected `soap:*`, Allow Wildcards
+- Odpověď serveru: Fault
+- Výsledek aserce: VALID (wildcard funguje na jednořádkové hodnotě)
+
+**W**
+- Co jsem změnil: Divide 2 / 0, XPath `normalize-space(//soap:Fault/faultstring)` (jeden řádek), Expected `*Server was unable to process request.*System.OverflowException: Arithmetic operation resulted in an overflow.*`, Allow Wildcards
+- Odpověď serveru: Fault
+- Výsledek aserce: FAILED i na jednom řádku: `expecting [*...overflow.*], actual was [System.Web.Services.Protocols.SoapException: Server was unable to process request. ---> System.OverflowException: Arithmetic operation resulted in an overflow. at Calculator.Divide(Int32 intA, Int32 intB) in G:\...:line 19 --- End of inner exception stack trace ---]`. Pokus je neplatný: wildcard nefunguje na výsledku funkce vůbec (řádek AI), takže o novém řádku nic neříká. Příčina neznámá
+
+**X**
+- Co jsem změnil: Divide 2 / 0, aserce Contains s obsahem `System.DivideByZeroException`
+- Odpověď serveru: Fault
+- Výsledek aserce: FAILED: `Missing token [System.DivideByZeroException] in Response`
+
+**Y**
+- Co jsem změnil: `Divide - request` 2 / 2 (happy path), XPath `//ns1:DivideResult`, očekáváno `2` místo `1`
+- Odpověď serveru: `DivideResult` = 1
+- Výsledek aserce: FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; declare namespace ns1='http://tempuri.org/'; //ns1:DivideResult], expecting [2], actual was [1]`. Výchozí stav před sabotáží: 5 aserací zelených (SOAP Response, Valid HTTP Status Codes, Schema Compliance, Not SOAP Fault, XPath Match)
+
+**Z**
+- Co jsem změnil: `Divide - request` 7 / 2 (bez specifikace, pozorování)
+- Odpověď serveru: `DivideResult` = **4**, bez Faultu
+- Výsledek aserce: Tip předem 4 (zaokrouhlení 3,5) byl správný. Výsledek není celočíselné dělení s oříznutím (to by dalo 3). Možné vysvětlení: zaokrouhlení nebo zaokrouhlení nahoru `[HYPOTÉZA]`. Podle WSDL je `DivideResult` typu `s:int`
+
+**AA**
+- Co jsem změnil: Divide 2 / 0, wildcard na `normalize-space(//soap:Fault/faultstring)`: A) `System.Web.Services.Protocols.SoapException*`, B) `*System.OverflowException*`, C) `*Server was unable to process request.*System.OverflowException*`
+- Odpověď serveru: Fault
+- Výsledek aserce: **Všechny tři FAILED** (tip A selže: správně, B projde: chybně, C selže: správně). Přitom `soap:*` na `faultcode` funguje. Pokusy jsou neplatné, protože wildcard na výsledku funkce nefunguje (řádek AI). O počtu hvězdiček, tečce ani novém řádku z nich nelze nic vyvodit. Příčina neznámá
+
+**AB**
+- Co jsem změnil: Divide 2 / 0, XPath `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')`, Expected `true`
+- Odpověď serveru: Fault
+- Výsledek aserce: VALID (zelená ve výchozím stavu, sabotáž viz řádek AE)
+
+**AC**
+- Co jsem změnil: Divide 2 / 0, `faultcode` s `soap:*`: změněna deklarace prefixu na `xsoap`, ale zbytek cesty zůstal `soap:Body/soap:Fault`
+- Odpověď serveru: Fault
+- Výsledek aserce: FAILED. Pravděpodobně chyba výrazu (nedeklarovaný prefix `soap`), ne neshoda hodnoty (celá hláška nezachycena, proto sabotáž zopakována jako řádek AD)
+
+**AD**
+- Co jsem změnil: Divide 2 / 0, `faultcode`, XPath `//soap:Envelope/soap:Body/soap:Fault/faultcode`, Expected změněno na `xsoap:*` (jen hodnota)
+- Odpověď serveru: Fault
+- Výsledek aserce: FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; //soap:Envelope/soap:Body/soap:Fault/faultcode], expecting [xsoap:*], actual was [soap:Server]`
+
+**AE**
+- Co jsem změnil: Divide 2 / 0, `contains(normalize-space(//soap:Fault/faultstring), 'System.DivideByZeroException')`, Expected `true`
+- Odpověď serveru: Fault
+- Výsledek aserce: FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; contains(normalize-space(//soap:Fault/faultstring), 'System.DivideByZeroException')], expecting [true], actual was [false]`. Tip předem `Missing content` byl chybný: funkce vrací vždy `true` nebo `false` Ověřeno na vstupu 2 / 2 (řádek AH)
+
+**AF**
+- Co jsem změnil: Divide 2 / 0, `normalize-space(//soap:Fault/faultstring)`, Allow Wildcards, Expected D) `*unable*`, F) `System*`
+- Odpověď serveru: Fault
+- Výsledek aserce: Obě FAILED. Vysvětlení: wildcard nefunguje na výsledku funkce (řádek AI), závěr o tečce ani o novém řádku z toho vyvodit nelze
+
+**AG**
+- Co jsem změnil: Divide 0 / 0
+- Odpověď serveru: Stejný Fault jako 2 / 0 (`System.OverflowException`, `Calculator.Divide`, řádek 19)
+- Výsledek aserce: Tip předem `OverflowException` byl správný. Konzistentní s hypotézou o dělení desetinných čísel s převodem na `int` (podporují ji i 7 / 2 = 4 a 2 / 0), není to důkaz `[HYPOTÉZA]`
+
+**AH**
+- Co jsem změnil: Divide 2 / 2 (bez Faultu), aserce `contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')`, Expected `true`
+- Odpověď serveru: úspěšná odpověď
+- Výsledek aserce: FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; contains(normalize-space(//soap:Fault/faultstring), 'System.OverflowException')], expecting [true], actual was [false]`. Tip předem správný. Aserce s funkcí nerozliší „element chybí“ od „text nesedí“ (uzlová aserce by hlásila `Missing content`)
+
+**AI**
+- Co jsem změnil: Divide 2 / 0, `normalize-space(//soap:Fault/faultcode)`, Allow Wildcards, Expected `soap:*` a také `soap:Server`
+- Odpověď serveru: Fault
+- Výsledek aserce: **FAILED**: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; normalize-space(//soap:Fault/faultcode)], expecting [soap:*], actual was [soap:Server]`. Uzlová verze téhož (`//soap:Envelope/soap:Body/soap:Fault/faultcode`) je zelená, wildcard tedy nefunguje na výsledku funkce. Dřívější tvrzení „obě zelené“ (úloha 16) bylo chybné a nebylo doloženo screenshotem
+
+**AJ**
+- Co jsem změnil: Divide by Zero, `faultcode` přesně (Allow Wildcards vypnuto), Expected změněno na `soap:Client`
+- Odpověď serveru: Fault `soap:Server`
+- Výsledek aserce: FAILED: `XPathContains comparison failed for path [declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/'; //soap:Envelope/soap:Body/soap:Fault/faultcode], expecting [soap:Client], actual was [soap:Server]`
+
+**AK**
+- Co jsem změnil: Chain: `intA` v `Add_Druhy` předem `-1`, Property Transfer zakázán
+- Odpověď serveru: krok 3 pošle -1 + 7
+- Výsledek aserce: `AddResult` = 6. Hláška: `XPathContains comparison failed for path [declare namespace soap='http://www.w3.org/2003/05/soap-envelope'; declare namespace ns1='http://tempuri.org/'; //ns1:AddResult], expecting [200012], actual was [6]`. Tip předem „vše zelené“ byl chybný
+
+**AL**
+- Co jsem změnil: Divide by Zero s prázdným `intB` (`<tem:intB></tem:intB>`), rozhraní SOAP 1.1
+- Odpověď serveru: Fault `soap:Client`, `faultstring`: `System.Web.Services.Protocols.SoapException: Server was unable to read request. ---> System.InvalidO...` (stack trace s `ParseInt32` a `Read7_Divide`)
+- Výsledek aserce: `faultcode` FAILED: `expecting [soap:Server], actual was [soap:Client]`. `faultstring obsahuje OverflowException` FAILED: `expecting [true], actual was [false]`. **Valid HTTP Status Codes (500) a SOAP Fault zůstaly VALID**, takže chybu klienta od chyby serveru neodliší. Tip předem: „nevím“
+
+**AM**
+- Co jsem změnil: Divide 2 / 0, pozitivní kontrola: `normalize-space(//soap:Fault/faultcode)`, Expected doslovně `soap:Server`, Allow Wildcards **vypnuto**
+- Odpověď serveru: Fault `soap:Server`
+- Výsledek aserce: VALID (zelená, tip předem správný). Funkce tedy vrací správný text a selhává jen wildcard (`soap:*`, řádek AI). Mechanismus neznám. Aserce po pokusu smazána
 
 Rozdíl mezi hláškami: `Missing content` znamená, že element v odpovědi vůbec není (zde Fault), `comparison failed ... actual was` znamená, že element je, ale má jinou hodnotu.
 
