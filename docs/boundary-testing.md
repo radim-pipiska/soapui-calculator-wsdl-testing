@@ -29,5 +29,5 @@ Tato tabulka mapuje technické chování aplikace na úrovni 32-bitového Intege
 | :--- | :--- | :--- | :--- | :--- |
 | **2147483646 + 1** | Hranice (Max platná pro 32-bit int) | Ano | WSDL (XSD, s:int) | Výsledná hodnota je `2147483647` (maximální kladné číslo pro podepsaný 32-bit integer). |
 | **2147483647 + 1** | Hranice (Max neplatná - Overflow) | Ne | Výsledek mimo rozsah s:int (WSDL) | **HTTP 500, Fault soap:Server, OverflowException**. Nedochází k přetečení do záporných čísel. |
-| **Prázdný intB** | Třída (Tvar vstupu / Neúplná struktura) | Ne | WSDL (XSD, s:int); Divide (SOAP 1.1) | **Fault soap:Client**. Služba nedosazuje defaultní nulu (k tomu docházelo pouze při chybě v namespace). [HYPOTÉZA] |
+| **Prázdný intB** | Třída (Tvar vstupu / Neúplná struktura) | Ne | WSDL (XSD, s:int); Divide (SOAP 1.1) | **Fault soap:Client**. Služba nedosazuje defaultní nulu [HYPOTÉZA] (k tomu docházelo pouze při chybě v namespace). |
 
