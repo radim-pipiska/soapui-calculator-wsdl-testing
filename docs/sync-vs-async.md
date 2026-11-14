@@ -44,6 +44,7 @@ Smyčka opakovaných GET dotazů na stav objednávky musí končit přesně **t�
 ### Ověření větví pomocí sabotáží (Mocking)
 
 Abychom ověřili, že náš testovací skript správně reaguje na chování systému, musíme nasadit trojici sabotážních mocků:
+
 *Stav: návrh, spuštěním neověřeno.*
 
 | Sabotážní scénář (Mock) | Co testuje a ověřuje | Očekávaný výsledek v logu / hláška | Skutečný výsledek v logu / screenshot |
