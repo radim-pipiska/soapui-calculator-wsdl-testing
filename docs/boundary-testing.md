@@ -1,7 +1,7 @@
 # Testovací sada dat pro POST /payments a Calculator
 
 ## 1. Testovací sada: POST /payments
-Fiktivní specifikace: amount je 0,01 až 10000,00 včetně. Záporné hodnoty plynou z rozsahu, spec neříká, jak se odmítnou. Spec nic neříká o více než dvou desetinných místech.
+Fiktivní specifikace: amount je 0,01 až 10000,00 včetně. Záporné hodnoty plynou z rozsahu, spec neříká, jak se odmítnou. Spec také nic neříká o více než dvou desetinných místech.
 
 | hodnota | co testuje (třída/hranice) | platná? | zdroj platnosti | Otázka na analytika |
 | :--- | :--- | :--- | :--- | :--- |
