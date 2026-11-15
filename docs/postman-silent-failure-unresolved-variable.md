@@ -13,7 +13,7 @@ Testovací sada prošla zdánlivě bez chyb na svátcích, čímž zamaskovala r
 2. **Chování Postmana:** Názvy proměnných v Postmanovi jsou **case-sensitive** (rozlišují velká a malá písmena). Postman proměnnou `{{PersonId}}` nerozpoznal, nevyhodil žádnou chybu a místo čísla zaměstnance odeslal doslovný text `"{{PersonId}}"` (ověřeno v Postman Console).
 3. **Tiché selhání API:** Server přijal neplatný řetězec `"{{PersonId}}"`, vrátil stavový kód `200 OK` a prázdné pole `MarkedDays: []` (nic nezapsal). Protože prázdné pole odpovídalo očekávanému výsledku pro platný svátek, asserce pro všech 39 svátků prošly jako úspěšné.
 
-## Řešení: Automatický „hlídač“ nevyhodnocených proměnných
+## Řešení: Automatický „hlídač“ nevyhodnocených proměnných /AI
 Aby se podobné tiché chyby způsobené překlepem v `{{...}}` už nemohly opakovat, doplnil jsem do záložky **Scripts** automatickou kontrolu.
 
 ### 1. Pre-request Script (Zastavení požadavku před odesláním)
