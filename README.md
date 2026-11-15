@@ -14,14 +14,6 @@ Učební projekt (říjen–listopad 2026): testování SOAP API v **SoapUI 5.10
 
 [REST, SOAP a messaging očima testera](docs/rest-soap-messaging.md)
 
-## 🔍 Případové studie a řešení problémů z praxe
-
-Kromě samotných testovacích kolekcí zde sdílím konkrétní technické situace z testování REST API, jejich analýzu a řešení:
-
-* [Skrytá past v podobě case-sensitivity proměnných a stavovosti dat v Postmanovi](docs/postman-silent-failure-unresolved-variable.md)
-  * **Problém:** Překlep ve velikosti písmen (`{{PersonId}}` vs. `personId`) způsobil odeslání doslovného textu proměnné. V kombinaci s nevalidovaným vstupem a stavem databáze (již dříve zapsané dny) to vedlo k falešně zelenému výsledku celého DDT běhu (160/0 místo odhalení 17 vad).
-  * **Řešení a ověření:** Zavedení pravidla izolace testovacích dat (nová entita pro každý běh) a implementace „fail-safe“ hlídače v JavaScriptu (Pre-request + Post-response), jehož odolnost jsem ověřil řízenou sabotáží vstupů i samotného skriptu. Součástí je také formulace dotazu na systémového analytika ohledně validace vstupů (`200 OK` vs. `4xx`).
-
 ## Obsah repozitáře
 
 - `soapui/Calculator-soapui-project.xml` export projektu SoapUI (bez hesel a tajných hodnot)
