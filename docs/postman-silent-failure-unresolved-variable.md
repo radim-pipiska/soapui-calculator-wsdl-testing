@@ -4,7 +4,7 @@
 Při datově řízeném testování (DDT – Data-Driven Testing) REST API pro rezervaci dovolených bylo cílem ověřit byznys pravidlo pro filtrování dnů:
 * **Pravidlo:** Státní svátky a víkendy (sobota, neděle) se nesmí zapsat do rezervace.
 * **Testovací sada:** Celkem 40 iterací (39 státních svátků + 1 kontrolní pracovní den).
-* **Očekávané chování:** V testovaném API jsou úmyslně integrované chyby v logice svátků. Správně běžící test měl proto odhalit 16 chybně zapsaných svátků a 1 platný pracovní den.
+* **Očekávané chování:** V testovaném API jsou úmyslně integrované chyby v logice svátků. Správně běžící test měl proto odhalit 17 chybně zapsaných svátků. Dataset obsahuje i Negativní scénář pro zapsání jednoho 1 platného pracovního dne.
 
 ## Co se pokazilo (Průběh incidentu)
 Testovací sada prošla zdánlivě bez chyb na svátcích, čímž zamaskovala reálné defekty v aplikaci (tzv. *false positive* – falešně pozitivní výsledek).
