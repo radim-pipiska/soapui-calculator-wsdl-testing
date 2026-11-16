@@ -87,9 +87,9 @@ Nasazení hlídače rozšířilo sadu ze 160 na **200 testů** (40 iterací × 5
 
 | Scénář ověření | Výsledek | Co tento běh dokazuje |
 | :--- | :--- | :--- |
-| **1. Správná proměnná `{{personId}}` (osoba `RP281`), hlídač zapnutý** | [**200 testů, 17 červených**](screenshots/Correct_variable_personId_monitor_enabled_200_17.png) | Hlídač je zelený (`Console: OK`), test spolehlivě zachytil 17 záměrných vad API. |
-| **2. Rozbitá proměnná `{{PersonId}}`, hlídač zapnutý** (jméno použité už v dřívějších bězích) | [**200 testů, 41 červených**](screenshots/Broken_variable_PersonId_monitor_enabled_200_41) | Hlídač zčervenal ve všech 40 iteracích a v hlášce testu je přesné tělo požadavku. Zbývající 1 chyba je kontrolní den 20. 8. (již zapsaný z dřívějška) *[HYPOTÉZA]*. |
-| **3. Správná proměnná, hlídač vypnutý (`return;`)**, čistá osoba (projevilo se 17 vad API) | [**200 testů, 57 červených**](screenshots/Correct_variable_monitor_disabled_200_57) | Hlídač **selhává bezpečně** (40× chyba `expected undefined to equal 'OK'` + 17 vad API). Vypnutí pre-requestu hlídač neukryje (ověřeno jen pro `return;`). |
+| **1. Správná proměnná `{{personId}}` (osoba `RP281`), hlídač zapnutý** | [**200 testů, 17 červených**](screenshots/Correct_variable_personId_monitor_enabled_200_17.png) | Hlídač je zelený ([`Console: OK`](screenshots/Console_Variable_is_Ok.png)), test spolehlivě zachytil 17 záměrných vad API. |
+| **2. Rozbitá proměnná `{{PersonId}}`, hlídač zapnutý** (jméno použité už v dřívějších bězích) | [**200 testů, 41 červených**](screenshots/Broken_variable_PersonId_monitor_enabled_200_41.png) | Hlídač zčervenal ve všech 40 iteracích a v hlášce testu je přesné tělo požadavku. Zbývající 1 chyba je kontrolní den 20. 8. (již zapsaný z dřívějška) *[HYPOTÉZA]*. |
+| **3. Správná proměnná, hlídač vypnutý (`return;`)**, čistá osoba (projevilo se 17 vad API) | [**200 testů, 57 červených**](screenshots/Correct_variable_monitor_disabled_200_57.png) | Hlídač **selhává bezpečně** (40× chyba `expected undefined to equal 'OK'` + 17 vad API). Vypnutí pre-requestu hlídač neukryje (ověřeno jen pro `return;`). |
 
 **Stejný test, stejné datum, jiný výsledek:** test svátku `2028-12-25` skončil při správné osobě červeně (běh 12:56) a při rozbité proměnné zeleně, zatímco hlídač byl ve stejné iteraci červený (běh 18:54).
 
