@@ -87,9 +87,9 @@ Nasazení hlídače rozšířilo sadu ze 160 na **200 testů** (40 iterací × 5
 
 | Scénář ověření | Výsledek | Co tento běh dokazuje |
 | :--- | :--- | :--- |
-| **1. Správná proměnná `{{personId}}` (osoba `RP279`), hlídač zapnutý** | **200 testů, 17 červených** | Hlídač je zelený (`Console: OK`), test spolehlivě zachytil 17 záměrných vad API. |
-| **2. Rozbitá proměnná `{{PersonId}}`, hlídač zapnutý** (jméno použité už v dřívějších bězích) | **200 testů, 41 červených** | Hlídač zčervenal ve všech 40 iteracích a v hlášce testu je přesné tělo požadavku. Zbývající 1 chyba je kontrolní den 20. 8. (již zapsaný z dřívějška) *[HYPOTÉZA]*. |
-| **3. Správná proměnná, hlídač vypnutý (`return;`)**, čistá osoba (projevilo se 17 vad API) | **200 testů, 57 červených** | Hlídač **selhává bezpečně** (40× chyba `expected undefined to equal 'OK'` + 17 vad API). Vypnutí pre-requestu hlídač neukryje (ověřeno jen pro `return;`). |
+| **1. Správná proměnná `{{personId}}` (osoba `RP281`), hlídač zapnutý** | [**200 testů, 17 červených**](screenshots/Correct_variable_personId_monitor_enabled_200_17.png) | Hlídač je zelený (`Console: OK`), test spolehlivě zachytil 17 záměrných vad API. |
+| **2. Rozbitá proměnná `{{PersonId}}`, hlídač zapnutý** (jméno použité už v dřívějších bězích) | [**200 testů, 41 červených**](screenshots/Broken_variable_PersonId_monitor_enabled_200_41) | Hlídač zčervenal ve všech 40 iteracích a v hlášce testu je přesné tělo požadavku. Zbývající 1 chyba je kontrolní den 20. 8. (již zapsaný z dřívějška) *[HYPOTÉZA]*. |
+| **3. Správná proměnná, hlídač vypnutý (`return;`)**, čistá osoba (projevilo se 17 vad API) | [**200 testů, 57 červených**](screenshots/Correct_variable_monitor_disabled_200_57) | Hlídač **selhává bezpečně** (40× chyba `expected undefined to equal 'OK'` + 17 vad API). Vypnutí pre-requestu hlídač neukryje (ověřeno jen pro `return;`). |
 
 **Stejný test, stejné datum, jiný výsledek:** test svátku `2028-12-25` skončil při správné osobě červeně (běh 12:56) a při rozbité proměnné zeleně, zatímco hlídač byl ve stejné iteraci červený (běh 18:54).
 
@@ -105,7 +105,7 @@ Vzhledem k tomu, že při testování nebyla k dispozici kompletní specifikace 
 ---
 
 ## 7. Poznatky pro praxi
-* **Izolace testovacích dat je nutnost:** Stejný vstup dává při opakování jiný výsledek podle stavu databáze. Každý běh DDT sady proto musí používat **novou, čistou testovací osobu** (např. `RP261`, `RP262`, `RP279`), nebo po sobě data uklízet, pokud to API umožňuje (možnost úklidu nebyla ověřena).
+* **Izolace testovacích dat je nutnost:** Stejný vstup dává při opakování jiný výsledek podle stavu databáze. Každý běh DDT sady proto musí používat **novou, čistou testovací osobu** (např. `RP261`, `RP262`, `RP281`), nebo po sobě data uklízet, pokud to API umožňuje (možnost úklidu nebyla ověřena).
 * **Testovací data zůstávají v API:** sabotáže zanechaly záznamy pod jmény `{{PersonId}}` a `{{PersonID}}`.
 * **Zelený test ještě neznamená funkční aplikaci:** Vždy je nutné ověřit, že testy dokážou selhat ve chvíli, kdy selhat mají (kontrola proti známým chybám), a že asserce ověřují správný důvod úspěchu.
 * **Fail-safe přístup u pomocných skriptů:** Kontroly v testech musí být navržené tak, aby jejich případné vypnutí nebo rozbití vedlo k červenému výsledku, nikoliv k falešné zelené.
