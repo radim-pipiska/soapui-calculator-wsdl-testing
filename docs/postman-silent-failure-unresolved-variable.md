@@ -104,7 +104,7 @@ Vzhledem k tomu, že při testování nebyla k dispozici kompletní specifikace 
 
 ---
 
-## 7. Klíčové poznatky pro praxi
+## 7. Poznatky pro praxi
 * **Izolace testovacích dat je nutnost:** Stejný vstup dává při opakování jiný výsledek podle stavu databáze. Každý běh DDT sady proto musí používat **novou, čistou testovací osobu** (např. `RP261`, `RP262`, `RP279`), nebo po sobě data uklízet, pokud to API umožňuje (možnost úklidu nebyla ověřena).
 * **Testovací data zůstávají v API:** sabotáže zanechaly záznamy pod jmény `{{PersonId}}` a `{{PersonID}}`.
 * **Zelený test ještě neznamená funkční aplikaci:** Vždy je nutné ověřit, že testy dokážou selhat ve chvíli, kdy selhat mají (kontrola proti známým chybám), a že asserce ověřují správný důvod úspěchu.
