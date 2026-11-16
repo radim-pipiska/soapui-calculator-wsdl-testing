@@ -14,6 +14,8 @@ Učební projekt (říjen–listopad 2026): testování SOAP API v **SoapUI 5.10
 
 [REST, SOAP a messaging očima testera](docs/rest-soap-messaging.md)
 
+[Případová studie: Skrytá past v podobě case-sensitivity proměnných a stavovosti dat v Postmanovi](docs/postman-silent-failure-unresolved-variable)
+
 ## Obsah repozitáře
 
 - `soapui/Calculator-soapui-project.xml` export projektu SoapUI (bez hesel a tajných hodnot)
