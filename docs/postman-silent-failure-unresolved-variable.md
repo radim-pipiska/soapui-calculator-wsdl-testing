@@ -19,7 +19,7 @@ Testovací sada prošla zdánlivě bez jediné chyby (160/160 zelených), čím�
 
 ---
 
-## 3. Hloubková analýza: Vliv stavu databáze na výsledky
+## 3. Další poznatky: Vliv stavu databáze na výsledky
 Dalším zkoumáním v Postman Console a opakováním běhů se ukázalo, že samotný překlep je jen polovina problému. **Pravděpodobným zdrojem falešně zelených výsledků je kombinace nevalidovaného vstupu a stavu databáze** (viz „doloženo“ a „odvozeno“ níže).
 
 API si pamatuje již zapsané dny a při opakovaném pokusu o zápis vrací `200 OK`, prázdné pole `MarkedDays: []` a zprávu *„Žádné nové dny dovolené (vše již zapsáno nebo jen víkendy/svátky)“*. 
