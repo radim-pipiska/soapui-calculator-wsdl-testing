@@ -36,7 +36,7 @@ API si pamatuje již zapsané dny a při opakovaném pokusu o zápis vrací `200
 | **13:10** | `{{PersonId}}` *(opakovaný běh)* | Již existující *(vč. 20. 8. z běhu 12:32)* | **159 / 1** | Zčervenal pouze kontrolní pracovní den (20. 8.), protože pro jméno `{{PersonId}}` už byl zapsaný z dřívějška. |
 | **13:20** | `{{PersonID}}` *(jiný překlep)* | Nová „pseudo-osoba“ | **143 / 17** | Nový neexistující řetězec API založilo jako čistou osobu a chovalo se stejně jako u platného ID. Doloženo Console: *„Zapsáno 1 dní dovolené pro osobu {{PersonID}}.“* |
 
-> **Důležitý poznatek:** Výsledek testu závisí na stavu databáze – rozbitá proměnná prošla bez chyby (160/0) pravděpodobně proto, že pro daný řetězec už byla data v databázi zapsaná *[HYPOTÉZA]*. Ani kontrolní řádek s pracovním dnem (20. 8.) není spolehlivou ochranou proti rozbité proměnné, pokud test neběží nad čistými daty.
+> **Zjištěné poznatky:** Výsledek testu závisí na stavu databáze – rozbitá proměnná prošla bez chyby (160/0) pravděpodobně proto, že pro daný řetězec už byla data v databázi zapsaná *[HYPOTÉZA]*. Ani kontrolní řádek s pracovním dnem (20. 8.) není spolehlivou ochranou proti rozbité proměnné, pokud test neběží nad čistými daty.
 
 ---
 
@@ -96,7 +96,7 @@ Nasazení hlídače rozšířilo sadu ze 160 na **200 testů** (40 iterací × 5
 ---
 
 ## 6. Otevřená otázka na systémového analytika
-Vzhledem k tomu, že při testování nebyla k dispozici kompletní specifikace API, nehlásil jsem chování serveru rovnou jako chybu, ale připravil jsem jej jako konstruktivní dotaz k vyjasnění validace vstupů:
+Vzhledem k tomu, že při testování nebyla k dispozici kompletní specifikace API, nehlásil jsem chování serveru rovnou jako chybu, ale připravil jsem jej jako dotaz k vyjasnění validace vstupů:
 
 > **Otázka na analytika:** *Má API přijmout jakýkoliv libovolný textový řetězec jako `personId` (např. neexistující ID nebo řetězec `"{{PersonId}}"`), založit ho, odpovědět `200 OK` a zapsat mu dovolenou? Neměla by na vstupu probíhat validace formátu či existence zaměstnance v číselníku, a v případě neplatného vstupu vracet klientskou chybu `4xx` (např. `400 Bad Request` nebo `404 Not Found`)?*
 
