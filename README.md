@@ -4,7 +4,7 @@ Učební projekt (říjen–listopad 2026): testování SOAP API v **SoapUI 5.10
 
 # Fáze 2A: integrační architektura
 
-[Integrační testování: Návrh odpovědí mocku platební služby](docs/mocking.md)
+[Integrační testování: **Návrh odpovědí mocku platební služby**](docs/mocking.md)
 
 [Testovací sada dat pro POST /payments a Calculator](docs/boundary-testing.md)
 
