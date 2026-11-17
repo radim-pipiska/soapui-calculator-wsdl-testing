@@ -3,7 +3,7 @@
 ## 1. Testovací sada: POST /payments
 Fiktivní specifikace: amount je 0,01 až 10000,00 včetně, currency je povinná (CZK, EUR). Tabulka níže pokrývá jen `amount`, hodnoty pro `currency` zatím chybí. Záporné hodnoty plynou z rozsahu, spec neříká, jak se odmítnou. Spec také nic neříká o více než dvou desetinných místech.
 
-*Tabulka pokrývá jen amount*
+**Tabulka pokrývá jen amount*
 
 | hodnota | co testuje (třída/hranice) | platná? | zdroj platnosti | Otázka na analytika |
 | :--- | :--- | :--- | :--- | :--- |
