@@ -23,6 +23,7 @@ Testovací sada prošla zdánlivě bez jediné chyby (160/160 zelených), čím�
 Dalším zkoumáním v Postman Console a opakováním běhů se ukázalo, že samotný překlep je jen polovina problému. **Pravděpodobným zdrojem falešně zelených výsledků je kombinace nevalidovaného vstupu a stavu databáze** (viz „doloženo“ a „odvozeno“ níže).
 
 API si pamatuje již zapsané dny a při opakovaném pokusu o zápis vrací `200 OK`, prázdné pole `MarkedDays: []` a zprávu *„Žádné nové dny dovolené (vše již zapsáno nebo jen víkendy/svátky)“*. 
+
 **Doloženo:** API přijme doslovný řetězec jako jméno osoby a zapíše pod něj dovolenou (Console, 14. 11. 2026, 13:20: *„Zapsáno 1 dní dovolené pro osobu {{PersonID}}.“*). Nové, dosud nepoužité jméno se chová jako čistá osoba (143 / 17).
 
 **Odvozeno `[HYPOTÉZA]`:** běh v 12:32 proběhl nad jménem `{{PersonId}}`, které už mělo vadných 17 dnů zapsaných z dřívějších pokusů. Proto API vrátilo prázdné `MarkedDays` a testy svátků prošly. Kontrolní den 20. 8. pro toto jméno zřejmě zapsán nebyl (kontrolní test prošel), zapsal se až při tomto běhu a proto zčervenal v 13:10. Odpovědi z běhu v 12:32 jsem přímo neviděl. Vyplývá to z toho, že čisté jméno dává 17 červených.
@@ -49,7 +50,7 @@ Aby test nespoléhal jen na stav dat a okamžitě odhalil jakoukoliv nevyhodnoce
 
 **Rozsah hlídače:** kontroluje jen `raw` tělo a URL (včetně query). Nehlídá hlavičky, autorizaci ani jiné typy těla (např. form-data).
 
-### 1. Pre-request Script (Detekce a příprava dat)
+### 1. Pre-request Script (Detekce a příprava dat) /AI
 Skript před odesláním požadavku zkontroluje, zda v těle nebo v URL nezůstaly znaky `{{`, a výsledek uloží do lokálních proměnných.
 
 ```javascript
@@ -68,7 +69,7 @@ pm.variables.set("local_varsDetail", unresolved.join(" | "));
 console.log("[kontrola proměnných]", pm.variables.get("local_varsCheck"));
 ```
 
-### 2. Post-response Script (Fail-Safe asserce)
+### 2. Post-response Script (Fail-Safe asserce) /AI
 Asserce ověří, že kontrola proběhla a dopadla stavem `"OK"`. Díky tomu hlídač **selhává bezpečně (fail-safe)**. Ověřeno pro vypnutí pre-requestu přes `return;` (sekce 5): test neskončí zeleně, ale spadne na chybu `expected undefined to equal 'OK'`. Smazání pre-requestu nebo přejmenování proměnné by mělo dát totéž (`undefined`), ale neověřeno. Hlídač se naopak potichu vyřadí smazáním samotného testu v záložce Tests.
 
 ```javascript

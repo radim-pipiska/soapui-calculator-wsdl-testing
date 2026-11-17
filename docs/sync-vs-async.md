@@ -1,6 +1,8 @@
 
 # Testování asynchronní komunikace a princip Pollingu
-Shrnutí osvědčených postupů pro QA testery při ověřování asynchronních scénářů a integračních testů REST API.
+Shrnutí postupů pro QA testery při ověřování asynchronních scénářů a integračních testů REST API.
+
+*Stav: návrh z cvičení s fiktivními stavy a endpointem. Žádný skript ani mock pro polling zatím neběžel.*
 
 ## 1. Jak koncept asynchronní komunikace vysvětlit juniorovi?
 
@@ -33,7 +35,7 @@ Bez těchto informací se selhání v lozích nedá vyšetřit.
 
 ### Tři očekávané konce a pojistka na neznámý stav
 
-Smyčka opakovaných GET dotazů na stav objednávky musí končit přesně **třemi způsoby**:
+Smyčka opakovaných GET dotazů na stav objednávky musí končit třemi očekávanými způsoby (plus pojistka na neznámý stav níže):
 
 1. **Očekávaný konečný stav (`COMPLETED`)** → Smyčka úspěšně končí, následuje aserce na správný výsledek.
 2. **Chybový konečný stav (`FAILED`)** → Smyčka se okamžitě zastaví. Čekat dál nemá smysl, test ihned selže (zčervená), protože objednávka se nezpracovala.
