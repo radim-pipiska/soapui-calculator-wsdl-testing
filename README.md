@@ -2,26 +2,26 @@
 
 Učební projekt (říjen–listopad 2026): testování SOAP API v **SoapUI 5.10.0** na veřejné demo službě třetí strany `http://www.dneonline.com/calculator.asmx?WSDL`. Nejsem autor ani provozovatel služby. Specifikace chování neexistuje, proto jsou závěry označeny jako **pozorování**, ne jako potvrzené vady.
 
-# Fáze 2A: integrační architektura
+Repozitář obsahuje také materiály z další fáze učebního projektu (integrační architektura, Postman), viz níže.
 
-[Integrační testování: **Návrh odpovědí mocku platební služby**](docs/mocking.md)
+## Fáze 2A: integrační architektura a negativní testování
 
-[Testovací sada dat pro POST /payments a Calculator](docs/boundary-testing.md)
+Dokumenty ve složce `docs/`, stav je uveden u každého.
 
-[Asynchronní testování: Tři typické problémy front a otázky na analytika](docs/messaging-risks.md)
-
-[Testování asynchronní komunikace a princip Pollingu](docs/sync-vs-async.md)
-
-[REST, SOAP a messaging očima testera](docs/rest-soap-messaging.md)
-
-[Případová studie: Skrytá past v podobě case-sensitivity proměnných a stavovosti dat v Postmanovi](docs/postman-silent-failure-unresolved-variable.md)
+- [Návrh odpovědí mocku platební služby](docs/mocking.md): mock v Postmanu, ověřeno během v Runneru a sabotážemi (8. 11. 2026)
+- [Testovací sada dat pro POST /payments a Calculator](docs/boundary-testing.md): ekvivalenční třídy a hranice, fiktivní specifikace, část hodnot z pozorování na Calculatoru
+- [Tři typické problémy front a otázky na analytika](docs/messaging-risks.md): návrh bez reálného brokeru
+- [Asynchronní testování a polling](docs/sync-vs-async.md): návrh, sabotáže zatím neprovedeny
+- [REST, SOAP a messaging očima testera](docs/rest-soap-messaging.md): srovnání, část z AI, messaging z cvičení
+- [Případová studie: falešně zelené testy v Postmanu](docs/postman-silent-failure-unresolved-variable.md): pokusy na tréninkovém Vacation API (14. 11. 2026), kolekce není součástí repozitáře
 
 ## Obsah repozitáře
 
 - `soapui/Calculator-soapui-project.xml` export projektu SoapUI (bez hesel a tajných hodnot)
 - `notes.md` pozorování, experimenty a doslovné hlášky
 - `docs/ai-review.md` kontrola výstupů AI (tvrzení, ověření, verdikt)
-- `Postman` [Payment service Mock](postman/Payment_Service_Mock.postman_collection.json)
+- `postman/Payment_Service_Mock.postman_collection.json` kolekce Postman pro mock platební služby (adresa mock serveru není součástí)
+- `docs/` dokumenty z fáze 2A (viz výše)
 - `prompts/` verze promptů pro AI a jejich výstupy
 - `screenshots/` důkazy k experimentům
 
@@ -63,7 +63,7 @@ Použité aserce: SOAP Response, Schema Compliance, XPath Match (včetně funkce
 
 ## Stav
 
-Rozpracováno. Poslední ověřený zelený běh Calculatoru je: 31. 10. a Payment service Mocku je z 8. 11.2026. Otevřené body jsou na konci `notes.md`.
+Rozpracováno. Poslední ověřený zelený běh: Calculator 31. 10. 2026, Payment Service Mock 8. 11. 2026. Otevřené body jsou na konci `notes.md`.
 
 ## Licence
 
