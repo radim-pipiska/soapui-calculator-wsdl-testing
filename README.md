@@ -67,4 +67,4 @@ Rozpracováno. Poslední ověřený zelený běh: Calculator 31. 10. 2026, Payme
 
 ## Licence
 
-MIT, viz soubor `LICENSE`. Licence se nevztahuje na kopii WSDL služby třetí strany, kterou SoapUI ukládá do projektu.
+MIT, viz soubor `LICENSE`. Licence se nevztahuje na databázi SQLite (software třetí strany), která je součástí projektu.
