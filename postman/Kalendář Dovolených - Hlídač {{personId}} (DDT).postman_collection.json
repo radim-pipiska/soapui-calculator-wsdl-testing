@@ -1,0 +1,136 @@
+{
+  "info": {
+    "_postman_id": "3042f041-4f78-4521-b6f1-885311094b62",
+    "name": "Kalendář Dovolených - Hlídač {{personId}} (DDT)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "37519529"
+  },
+  "item": [
+    {
+      "name": "GET /VacationCheck - Ověření",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const currentName = pm.iterationData.get('holidayName');",
+              "const currentDate = pm.iterationData.get('holidayDate');",
+              "pm.test(`Status 200: ${currentName} (${currentDate})`, function () { pm.response.to.have.status(200); });",
+              "pm.test('IsVacation is false', function () { pm.expect(pm.response.json().IsVacation).to.eql(false); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/VacationCheck?personId={{personId}}&date={{holidayDate}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "VacationCheck"
+          ],
+          "query": [
+            {
+              "key": "personId",
+              "value": "{{personId}}"
+            },
+            {
+              "key": "date",
+              "value": "{{holidayDate}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST /Vacation - Zápis",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Všechny proměnné v těle a URL požadavku jsou nahrazeny\", function () {\r\n    pm.expect(\r\n        pm.variables.get(\"local_varsCheck\"),\r\n        pm.variables.get(\"local_varsDetail\")\r\n    ).to.equal(\"OK\");\r\n});\r\n\r\n// 1. Základní kontrola na status kód (očekáváme vždy 200)\r\npm.test(\"Status kód je 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n// 2. Chytrá univerzální aserce pro datově řízené testy (Data-Driven)\r\nconst nazevSvatku = pm.iterationData.get(\"holidayName\");\r\nconst jeToNegativniTest = nazevSvatku.includes(\"Negativní test\");\r\n\r\nif (jeToNegativniTest) {\r\n    // Aserce pro 40. iteraci (Běžný pracovní den)\r\n    pm.test(\"Negativní test: Dovolená se úspěšně zapsala\", function () {\r\n        var jsonData = pm.response.json();\r\n        pm.expect(jsonData.MarkedDays).to.be.an('array').that.is.not.empty;\r\n    });\r\n} else  {\r\n    // Aserce pro prvních 39 iterací (Skutečné svátky)\r\n    pm.test(\"Očekáváno: Žádný zápis dovolené během státního svátku\", function () {\r\n        var jsonData = pm.response.json();\r\n        \r\n        // Zpráva, která se vypíše v případě selhání (Custom error message)\r\n        var detailChyby = \"Chyba! API nezahodilo státní svátek a zapsalo ho do databáze.\";\r\n        \r\n        pm.expect(jsonData.MarkedDays, detailChyby).to.be.an('array').that.is.empty;\r\n    });\r\n}"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "//return; // Dočasné vypnutí skriptu\r\n\r\nconst rawBody = pm.request.body ? (pm.request.body.raw || \"\") : \"\";\r\nconst rawUrl = pm.request.url.toString();\r\n\r\nconst resolvedBody = pm.variables.replaceIn(rawBody);\r\nconst resolvedUrl = pm.variables.replaceIn(rawUrl);\r\n\r\nconst unresolved = [];\r\nif (resolvedBody.includes(\"{{\")) unresolved.push(\"tělo: \" + resolvedBody);\r\nif (resolvedUrl.includes(\"{{\")) unresolved.push(\"URL: \" + resolvedUrl);\r\n\r\npm.variables.set(\"local_varsCheck\", unresolved.length === 0 ? \"OK\" : \"CHYBA\");\r\npm.variables.set(\"local_varsDetail\", unresolved.join(\" | \"));\r\nconsole.log(\"[kontrola proměnných]\", pm.variables.get(\"local_varsCheck\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"PersonId\": \"{{personId}}\",\n    \"DateFrom\": \"{{holidayDate}}\",\n    \"DateTo\": \"{{holidayDate}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "text"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Vacation",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Vacation"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "personId",
+      "value": ""
+    }
+  ]
+}
